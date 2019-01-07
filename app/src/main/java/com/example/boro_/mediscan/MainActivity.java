@@ -166,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
         Produkt.add("Treo");
         Produkt.add("Receptfritt");
         Produkt.add("Läkemedel");
-        Produkt.add("Brustablett");
         Produkt.add("500mg/50mg");
+        Produkt.add("Brustablett");
         Produkt.add("Ej narkotikaklassad");
         Produkt.add("N");
 
@@ -206,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
         Produkt.add("Alvedon");
         Produkt.add("Receptfritt");
         Produkt.add("Läkemedel");
-        Produkt.add("Filmdragerad tablett");
         Produkt.add("500mg");
+        Produkt.add("Filmdragerad tablett");
         Produkt.add("Ej narkotikaklassad");
         Produkt.add("N");
 
