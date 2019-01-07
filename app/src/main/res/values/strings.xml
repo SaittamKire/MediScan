@@ -1,11 +1,21 @@
 <resources>
+    //Application
     <string name="app_name">MediScan</string>
-    <string name="tab_text_1">Recent Searches</string>
-    <string name="tab_text_2">Scan</string>
-    <string name="tab_text_3">Retrieved Data</string>
-    <string name="action_settings">Settings</string>
+    <string name="tab_text_1">Nyaste Sökningarna</string>
+    <string name="tab_text_2">Scanna</string>
+    <string name="tab_text_3">Hämta Data</string>
+    <string name="action_settings">Inställningar</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="take_photo">Ta ett Kort!</string>
 
+    <string name="tab_text_1_en">Recent Searches</string>
+    <string name="tab_text_2_en">Scan</string>
+    <string name="tab_text_3_en">Retrieved Data</string>
+    <string name="action_settings_en">Settings</string>
+    <string name="section_format_en">Hello World from section: %1$d</string>
+    <string name="take_photo_en">Take a Picture!</string>
+
+    //Product
     <string name="name"><u>Namn:</u></string>
     <string name="presc"><u>Recept:</u></string>
     <string name="prodType"><u>Typ av produkt:</u></string>
@@ -14,25 +24,47 @@
     <string name="narc"><u>Narkotikaklassad:</u></string>
     <string name="saleStopped"><u>Försäljningsstopp:</u></string>
 
-    <string name="compounds"><u>Aktiva substanser:</u></string>
+    <string name="name_en"><u>Name:</u></string>
+    <string name="presc_en"><u>Prescription:</u></string>
+    <string name="prodType_en"><u>Produkt Type:</u></string>
+    <string name="medForm_en"><u>Medical form:</u></string>
+    <string name="strength_en"><u>Strength:</u></string>
+    <string name="narc_en"><u>Narcotic Classification:</u></string>
+    <string name="saleStopped_en"><u>Sales Stopped:</u></string>
 
+    //Compounds
+    <string name="compounds"><u>Aktiva substanser:</u></string>
+    <string name="compounds_en"><u>Active Substances:</u></string>
+
+    //Organizations
     <string name="orgName"><u>Organisationsnamn:</u></string>
     <string name="orgAdr"><u>Address:</u></string>
     <string name="country"><u>Land:</u></string>
     <string name="role"><u>Roll:</u></string>
 
+    <string name="orgName_en"><u>Organization Name:</u></string>
+    <string name="orgAdr_en"><u>Address:</u></string>
+    <string name="country_en"><u>Country:</u></string>
+    <string name="role_en"><u>Role:</u></string>
+
+    //Packageinfo
     <string name="packageType"><u>Typ:</u></string>
     <string name="lifespan"><u>Hållbarhet:</u></string>
     <string name="storageInfo"><u>Förvaringsinformation:</u></string>
 
+    <string name="packageType_en"><u>Type:</u></string>
+    <string name="lifespan_en"><u>Lifespan:</u></string>
+    <string name="storageInfo_en"><u>Storage Information:</u></string>
+
 
     //Wakeup Dialog Strings
     <string name="dialog_text_sv">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>
-    <string name="dialog_text_en">The user is responsible for their own decisions made by the presented data. Make sure that the correct medicine is presented on screen after a search has been made. The creators of this application is not responsible for injury or death.</string>
     <string name="dialog_text_disclaimer_sv">Genom att klicka på \"JA \" godkänner du dessa vilkor</string>
+    <string name="dialog_text_ok_sv">Ja</string>
+
+    <string name="dialog_text_en">The user is responsible for their own decisions made by the presented data. Make sure that the correct medicine is presented on screen after a search has been made. The creators of this application is not responsible for injury or death.</string>
     <string name="dialog_text_disclaimer_en"> By clicking \"YES\" you accept these conditions</string>
     <string name="dialog_text_ok_en">Yes</string>
-    <string name="dialog_text_ok_sv">Ja</string>
-    //END DIALOG STUFF
+
 
 </resources>
