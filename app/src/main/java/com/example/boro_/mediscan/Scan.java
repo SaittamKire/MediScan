@@ -56,6 +56,7 @@ import com.example.boro_.mediscan.CameraTextRecognition.AutoFitTextureView;
 import com.example.boro_.mediscan.CameraTextRecognition.CloudLabelManipulator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
@@ -94,7 +95,6 @@ public class Scan extends Fragment {
     private static final int RECOGNIZED_TEXT_FAIL = 1;
 
     private CameraManager cameraManager;
-    //private Context ctx;
     private AutoFitTextureView cameraView;
     private Size streamsize;
     private CameraDevice cameraDevice;
@@ -106,8 +106,6 @@ public class Scan extends Fragment {
     private int textureheight;
     private String selectedcameraId;
     private boolean mFlashSupported;
-
-    private ImageButton snapshotButton;
 
     private HandlerThread backGroundThread;
     private Handler backGroundHandler;
@@ -618,8 +616,8 @@ public class Scan extends Fragment {
         public void onImageAvailable(final ImageReader reader) {
 
             //TODO ACTIVATE TEXT RECOGNITION
-            showToast("Not activated yet");
-            //backGroundHandler.post(new TextFromImageRecognizer(reader.acquireNextImage(),rotation));
+            //showToast("Not activated yet");
+            backGroundHandler.post(new TextFromImageRecognizer(reader.acquireNextImage(),rotation));
         }
     };
 
@@ -917,6 +915,8 @@ public class Scan extends Fragment {
             //Intent intent = new Intent(this, Main2Activity.class); // Creates and intent to show the info
             //intent.putExtra(EXTRA_MESSAGE,drug); // put text into
             //startActivity(intent); // start the activity which contains the drug information.
+            showToast(drug);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -960,7 +960,7 @@ public class Scan extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        FirebaseApp.initializeApp(this.getContext());
 
 
     }
