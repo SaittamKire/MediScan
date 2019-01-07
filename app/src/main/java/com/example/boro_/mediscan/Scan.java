@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -96,6 +97,8 @@ public class Scan extends Fragment {
 
     private CameraManager cameraManager;
     private AutoFitTextureView cameraView;
+    private ImageButton snapShotButton;
+    private ProgressBar progressBar;
     private Size streamsize;
     private CameraDevice cameraDevice;
     private CaptureRequest.Builder captureBuilder;
@@ -474,6 +477,8 @@ public class Scan extends Fragment {
                     //Send a message why text recognition failed
                     case RECOGNIZED_TEXT_FAIL:
 
+                        Toast.makeText(getContext(),(String) msg.obj,Toast.LENGTH_SHORT).show();
+                        enableSnapShot();
                         //text_fail_listener.onTextRecognizedFailed((String) msg.obj);
                         break;
 
@@ -529,7 +534,7 @@ public class Scan extends Fragment {
 
         //captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-        setAutoFlash(captureBuilder);
+        //setAutoFlash(captureBuilder);
         try {
             captureSession.setRepeatingRequest(captureBuilder.build(), captureCallback, null);
         } catch (Exception e) {
@@ -615,8 +620,7 @@ public class Scan extends Fragment {
         @Override
         public void onImageAvailable(final ImageReader reader) {
 
-            //TODO ACTIVATE TEXT RECOGNITION
-            //showToast("Not activated yet");
+
             backGroundHandler.post(new TextFromImageRecognizer(reader.acquireNextImage(),rotation));
         }
     };
@@ -648,7 +652,7 @@ public class Scan extends Fragment {
 
             //TODO What happens after snapshot?
             //Restart preview temporarily
-            restartPreview();
+            //restartPreview();
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -673,6 +677,7 @@ public class Scan extends Fragment {
     private void snapImage(){
 
         try {
+
             CaptureRequest.Builder snapCaptureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             snapCaptureBuilder.addTarget(imageReader.getSurface());
 
@@ -692,14 +697,16 @@ public class Scan extends Fragment {
                 }
             };
 
-            captureSession.stopRepeating();
-            captureSession.abortCaptures();
+            disableSnapshot();
+
             captureSession.capture(snapCaptureBuilder.build(),snapCallback,null);
 
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
+            enableSnapShot();
         }
+
     }
 
     private void setAutoFlash(CaptureRequest.Builder requestBuilder) {
@@ -883,8 +890,6 @@ public class Scan extends Fragment {
                             Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_SUCCESS,firebaseVisionDocumentText);
                             message_obj.sendToTarget();
 
-                            //Run line below to stop camera feed
-                            //uiHandler.sendEmptyMessage(2);
                         }
                         else{
                             Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_FAIL,"Unable to detect text, please try again.");
@@ -915,12 +920,15 @@ public class Scan extends Fragment {
             //Intent intent = new Intent(this, Main2Activity.class); // Creates and intent to show the info
             //intent.putExtra(EXTRA_MESSAGE,drug); // put text into
             //startActivity(intent); // start the activity which contains the drug information.
+            enableSnapShot();
+            //TODO Send json to it's intended page
             showToast(drug);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
     public void getImageStrings(FirebaseVisionDocumentText result){
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final CloudLabelManipulator Apistr = new CloudLabelManipulator(result); // Creates a cloudlabelmanipulator object out of the result from the firebasedocumenttext object we made earlier. we use functions in this class to find relevant text
@@ -930,7 +938,8 @@ public class Scan extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals("[]")){  // The API we have sends this if there is nothing to fetch so this is the same as 404
-                            Toast.makeText(getContext(), "Error With Image", Toast.LENGTH_SHORT).show(); //TODO Better Error Handling please.
+                            Toast.makeText(getContext(), "Could not find matching product", Toast.LENGTH_SHORT).show(); //TODO Better Error Handling please.
+                            enableSnapShot();
                             return;
                         }
                         try {
@@ -948,12 +957,49 @@ public class Scan extends Fragment {
             public void onErrorResponse(VolleyError error) {
 //                mTextView.setText("That didn't work!");
                 Toast.makeText(getContext(), "Could not communicate with database. Try again later.", Toast.LENGTH_SHORT).show();
+                enableSnapShot();
             }
         });
 
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
+
+    }
+
+
+    private void disableSnapshot(){
+        snapShotButton.setEnabled(false);
+        pausePreview();
+
+        Activity activity = getActivity();
+
+        if(activity == null) return;
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
+
+    private void enableSnapShot(){
+
+        Activity activity = getActivity();
+
+        if(activity == null) return;
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+
+        restartPreview();
+        snapShotButton.setEnabled(true);
 
     }
 
@@ -980,7 +1026,10 @@ public class Scan extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        view.findViewById(R.id.cameraSnap).setOnClickListener(onSnapshotClick);
+        snapShotButton = view.findViewById(R.id.cameraSnap);
+        snapShotButton.setOnClickListener(onSnapshotClick);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
         cameraView = view.findViewById(R.id.previewWindow);
     }
 
