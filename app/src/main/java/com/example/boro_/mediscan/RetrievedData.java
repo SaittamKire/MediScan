@@ -24,7 +24,7 @@ public class RetrievedData extends Fragment {
 
     List<String> listDataHeader;
     HashMap<String, List<String>> listHash;
-
+    private int lastExpandedPosition =-1;
 
     @Override
     public void onResume() {
@@ -52,21 +52,24 @@ public class RetrievedData extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle b = this.getArguments();
-        if(b.getSerializable("hashmap") != null)
-        {
-            listHash = new HashMap<String,List<String>>();
-            listHash = (HashMap<String,List<String>>)b.getSerializable("hashmap");
-            listDataHeader =  getArguments().getStringArrayList("listheader");
-        }
+        eListView = (ExpandableListView) view.findViewById(R.id.eLV);
+        eListAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listHash);
+        eListView.setIndicatorBounds(20, 100);
+        eListView.setAdapter(eListAdapter);
 
+        eListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
 
-        if (listHash.size() > 0) {
-            eListView = (ExpandableListView) view.findViewById(R.id.eLV);
-            eListAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listHash);
-            eListView.setIndicatorBounds(20, 100);
-            eListView.setAdapter(eListAdapter);
-        }
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    eListView.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+
+        eListView.expandGroup(0);
 
 
     }
