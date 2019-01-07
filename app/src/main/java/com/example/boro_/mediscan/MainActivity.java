@@ -69,7 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.setCurrentItem(1);
 
-
+        //Dialog logic
+        MyDialogClass cdd = new MyDialogClass(this); //Creates disclaimer-dialog
+        cdd.show(); //Shows it
+        cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+        cdd.setCancelable(false);
+        //End dialog logic
     }
 
 
