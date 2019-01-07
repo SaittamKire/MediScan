@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="55dip">
+    android:layout_height="55dip"
+    android:orientation="vertical"
+    android:weightSum="100">
+
+
+    <TextView
+        android:id="@+id/lbListItemTitle"
+        android:paddingTop="5dp"
+        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:textSize="16dp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        android:layout_weight="60"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTabText" />
 
     <TextView
         android:id="@+id/lbListItem"
         android:paddingTop="5dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:textSize="16dp"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="40"
         android:textColor="@color/colorTabText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

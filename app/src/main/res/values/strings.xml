@@ -5,4 +5,23 @@
     <string name="tab_text_3">Retrieved Data</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="name"><u>Namn:</u></string>
+    <string name="presc"><u>Recept:</u></string>
+    <string name="prodType"><u>Typ av produkt:</u></string>
+    <string name="medForm"><u>Läkemedelsform:</u></string>
+    <string name="strength"><u>Styrka:</u></string>
+    <string name="narc"><u>Narkotikaklassad:</u></string>
+    <string name="saleStopped"><u>Försäljningsstopp:</u></string>
+
+    <string name="compounds"><u>Aktiva substanser:</u></string>
+
+    <string name="orgName"><u>Organisationsnamn:</u></string>
+    <string name="orgAdr"><u>Address:</u></string>
+    <string name="country"><u>Land:</u></string>
+    <string name="role"><u>Roll:</u></string>
+
+    <string name="packageType"><u>Typ:</u></string>
+    <string name="lifespan"><u>Hållbarhet:</u></string>
+    <string name="storageInfo"><u>Förvaringsinformation:</u></string>
 </resources>

@@ -3,5 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorTabText">#FFFFFF</color>
+    <color name="colorTabText">#606060</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00ffffff</color>
 </resources>

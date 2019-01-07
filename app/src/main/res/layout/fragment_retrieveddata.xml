@@ -9,9 +9,19 @@
 
     <ExpandableListView
         android:id="@+id/eLV"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="fill_parent"
+        android:childDivider="@color/transparent"
+        android:choiceMode="singleChoice"
+        android:divider="@color/white"
+        android:dividerHeight="1dp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10sp"
+        android:scrollbars="none"
+        android:groupIndicator="@drawable/group_indicator_selector"
+        >
 
     </ExpandableListView>
 

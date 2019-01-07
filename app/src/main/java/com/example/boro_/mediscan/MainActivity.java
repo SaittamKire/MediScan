@@ -3,6 +3,7 @@ package com.example.boro_.mediscan;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -20,8 +21,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -38,10 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private ListView mListView;
 
+    ArrayList<String> listDataHeader;
+    HashMap<String, List<String>> listHash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initData();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -99,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
             Fragment fragment = null;
+            Bundle bundle = new Bundle();
+
+            bundle.putSerializable("hashmap", listHash);
+            bundle.putStringArrayList("listheader", listDataHeader);
 
             switch (position){
 
@@ -109,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new Scan(); break;
 
                 case 2:
-                    fragment = new RetrievedData(); break;
+                    fragment = new RetrievedData(); fragment.setArguments(bundle); break;
             }
             return fragment;
             // getItem is called to instantiate the fragment for the given page.
@@ -138,5 +151,91 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+    private void initData() {
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
+
+
+        listDataHeader.add("Produkt");
+        listDataHeader.add("Aktiva substanser");
+        listDataHeader.add("Organisationsinfo");
+        listDataHeader.add("Förpackning");
+
+        List <String> Produkt = new ArrayList<>();
+        Produkt.add("Treo");
+        Produkt.add("Receptfritt");
+        Produkt.add("Läkemedel");
+        Produkt.add("Brustablett");
+        Produkt.add("500mg/50mg");
+        Produkt.add("Ej narkotikaklassad");
+        Produkt.add("N");
+
+        List <String> Compounds = new ArrayList<>();
+        Compounds.add("Acetylsalicylsyra\nKoffein");
+
+        List <String> OrgInfo = new ArrayList<>();
+        OrgInfo.add("Treo AB");
+        OrgInfo.add("Treogatan 33");
+        OrgInfo.add("Treolian Empire");
+        OrgInfo.add("Innehavare av godkännande för försäljning");
+
+        List <String> Package = new ArrayList<>();
+        Package.add("Rör, 10 brustabletter");
+        Package.add("2 år");
+        Package.add("Ingen särskild temperaturbegränsning");
+
+        listHash.put(listDataHeader.get(0), Produkt);
+        listHash.put(listDataHeader.get(1), Compounds);
+        listHash.put(listDataHeader.get(2), OrgInfo);
+        listHash.put(listDataHeader.get(3), Package);
+
+
+    }
+    public void initData2() {
+        listDataHeader = new ArrayList<>();
+        listHash = new HashMap<>();
+
+
+        listDataHeader.add("Produkt");
+        listDataHeader.add("Aktiva substanser");
+        listDataHeader.add("Organisationsinfo");
+        listDataHeader.add("Förpackning");
+
+        List <String> Produkt = new ArrayList<>();
+        Produkt.add("Alvedon");
+        Produkt.add("Receptfritt");
+        Produkt.add("Läkemedel");
+        Produkt.add("Filmdragerad tablett");
+        Produkt.add("500mg");
+        Produkt.add("Ej narkotikaklassad");
+        Produkt.add("N");
+
+        List <String> Compounds = new ArrayList<>();
+        Compounds.add("Paracetamol");
+
+        List <String> OrgInfo = new ArrayList<>();
+        OrgInfo.add("Alvedon AB");
+        OrgInfo.add("Alvedonvägen 56");
+        OrgInfo.add("Sverige");
+        OrgInfo.add("Innehavare av godkännande för försäljning");
+
+        List <String> Package = new ArrayList<>();
+        Package.add("Burk, 2000 tabletter");
+        Package.add("20 år");
+        Package.add("Förvaras med fördel i ugn");
+
+        listHash.put(listDataHeader.get(0), Produkt);
+        listHash.put(listDataHeader.get(1), Compounds);
+        listHash.put(listDataHeader.get(2), OrgInfo);
+        listHash.put(listDataHeader.get(3), Package);
+
+
+    }
+
+    public void updateView(List<String> lh, HashMap<String, List<String>> lhm)
+    {
+        lh = listDataHeader;
+        lhm = listHash;
     }
 }

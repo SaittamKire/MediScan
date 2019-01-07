@@ -22,7 +22,6 @@
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="takePicture"
         android:text="Take a picture!"
         android:layout_marginBottom="200dp"/>
 

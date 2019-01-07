@@ -23,6 +23,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this.listHashMap = listHashMap;
     }
 
+
     @Override
     public int getGroupCount() {
         return listDataHeader.size();
@@ -82,8 +83,70 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.list_item, null);
         }
 
+
         TextView txtListChild = (TextView)convertView.findViewById(R.id.lbListItem);
+        TextView txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemTitle);
         txtListChild.setText(childText);
+
+        switch (groupPosition) //Nested switch-case to give the correct title to the layout input
+        {
+            case 0:
+                switch (childPosition)
+                {
+                    case 0:
+                        txtListChildTitle.setText(R.string.name);
+                        break;
+                    case 1:
+                        txtListChildTitle.setText(R.string.presc);
+                        break;
+                    case 2:
+                        txtListChildTitle.setText(R.string.prodType);
+                        break;
+                    case 3:
+                        txtListChildTitle.setText(R.string.strength);
+                        break;
+                    case 4:
+                        txtListChildTitle.setText(R.string.medForm);
+                        break;
+                    case 5:
+                        txtListChildTitle.setText(R.string.narc);
+                        break;
+                    case 6:
+                        txtListChildTitle.setText(R.string.saleStopped);
+                        break;
+                } break;
+            case 1:
+                txtListChildTitle.setText(R.string.compounds);
+                break;
+            case 2:
+                switch (childPosition) {
+                    case 0:
+                        txtListChildTitle.setText(R.string.orgName);
+                        break;
+                    case 1:
+                        txtListChildTitle.setText(R.string.orgAdr);
+                        break;
+                    case 2:
+                        txtListChildTitle.setText(R.string.country);
+                        break;
+                    case 3:
+                        txtListChildTitle.setText(R.string.role);
+                        break;
+                }break;
+            case 3:
+                switch (childPosition) {
+                    case 0:
+                        txtListChildTitle.setText(R.string.packageType);
+                        break;
+                    case 1:
+                        txtListChildTitle.setText(R.string.lifespan);
+                        break;
+                    case 2:
+                        txtListChildTitle.setText(R.string.storageInfo);
+                        break;
+                }break;
+        }
+
         return convertView;
     }
 

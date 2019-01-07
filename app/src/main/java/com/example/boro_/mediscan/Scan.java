@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.view.View.OnClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,8 @@ public class Scan extends Fragment {
         super.onCreate(savedInstanceState);
 
 
+
+
     }
 
     @Override
@@ -42,5 +46,6 @@ public class Scan extends Fragment {
         this.v = v;
         return v;//inflater.inflate(R.layout.fragment_conversion, container, false);
     }
+
 
 }
