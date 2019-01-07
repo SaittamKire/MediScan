@@ -618,6 +618,7 @@ public class Scan extends Fragment {
         public void onImageAvailable(final ImageReader reader) {
 
             //TODO ACTIVATE TEXT RECOGNITION
+            showToast("Not activated yet");
             //backGroundHandler.post(new TextFromImageRecognizer(reader.acquireNextImage(),rotation));
         }
     };
