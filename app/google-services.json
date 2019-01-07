@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "813871273309",
+    "firebase_url": "https://bottles-225016.firebaseio.com",
+    "project_id": "bottles-225016",
+    "storage_bucket": "bottles-225016.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813871273309:android:6ce1e3b32051d1d3",
+        "android_client_info": {
+          "package_name": "com.example.boro_.mediscan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813871273309-nbg80q1vn40c3rkfkboe37ucshdu6bai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWFsaMoDa8r2dd1XBh79mvu6VPHZdVkpg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813871273309:android:72a73909e01670f3",
+        "android_client_info": {
+          "package_name": "com.example.clank.bottlestexttest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813871273309-nbg80q1vn40c3rkfkboe37ucshdu6bai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWFsaMoDa8r2dd1XBh79mvu6VPHZdVkpg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
