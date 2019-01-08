@@ -72,8 +72,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -102,6 +100,7 @@ public class Scan extends Fragment {
     private Size streamsize;
     private CameraDevice cameraDevice;
     private CaptureRequest.Builder captureBuilder;
+    private CaptureRequest capturePreviewRequest;
     private CameraCaptureSession captureSession;
     private ImageReader imageReader;
     private int rotation;
@@ -468,8 +467,7 @@ public class Scan extends Fragment {
 
                     //Get Firebase text object
                     case RECOGNIZED_TEXT_SUCCESS:
-
-                        //text_success_listener.onTextRecognized((FirebaseVisionDocumentText)msg.obj);
+                        
                         getImageStrings((FirebaseVisionDocumentText)msg.obj);
 
                         break;
@@ -479,7 +477,7 @@ public class Scan extends Fragment {
 
                         Toast.makeText(getContext(),(String) msg.obj,Toast.LENGTH_SHORT).show();
                         enableSnapShot();
-                        //text_fail_listener.onTextRecognizedFailed((String) msg.obj);
+
                         break;
 
                     default:
@@ -499,18 +497,14 @@ public class Scan extends Fragment {
 
         //Setup the capture session
 
-        List<Surface> outputSurfaces = new LinkedList<>();
-
 
         imageReader.setOnImageAvailableListener(ImageAvailable, backGroundHandler);
-        outputSurfaces.add(imageReader.getSurface());
-        outputSurfaces.add(surface);
 
         captureBuilder.addTarget(surface);
 
 
         try {
-            cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
+            cameraDevice.createCaptureSession(Arrays.asList(surface,imageReader.getSurface()), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
                     captureSession = session;
@@ -532,11 +526,12 @@ public class Scan extends Fragment {
             return;
         }
 
-        //captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         captureBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-        //setAutoFlash(captureBuilder);
+        setAutoFlash(captureBuilder);
         try {
-            captureSession.setRepeatingRequest(captureBuilder.build(), captureCallback, null);
+
+            capturePreviewRequest = captureBuilder.build();
+            captureSession.setRepeatingRequest(capturePreviewRequest, captureCallback, backGroundHandler);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -621,7 +616,7 @@ public class Scan extends Fragment {
         public void onImageAvailable(final ImageReader reader) {
 
 
-            backGroundHandler.post(new TextFromImageRecognizer(reader.acquireNextImage(),rotation));
+           backGroundHandler.post(new TextFromImageRecognizer(reader.acquireNextImage(),rotation));
         }
     };
 
@@ -631,6 +626,7 @@ public class Scan extends Fragment {
         try {
 
             captureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START);
+
             currentCameraState = AWAIT_LOCK_STATE;
             captureSession.capture(captureBuilder.build(),captureCallback, backGroundHandler);
         } catch (CameraAccessException e) {
@@ -697,7 +693,7 @@ public class Scan extends Fragment {
                 }
             };
 
-            disableSnapshot();
+            waitForSnapshotResult();
 
             captureSession.capture(snapCaptureBuilder.build(),snapCallback,null);
 
@@ -731,7 +727,7 @@ public class Scan extends Fragment {
 
     }
 
-    private void pausePreview(){
+    private void stopPreview(){
 
         if(captureSession != null){
 
@@ -750,10 +746,10 @@ public class Scan extends Fragment {
     private void restartPreview(){
 
 
-        if(captureSession == null) return;
+        if(captureSession == null || capturePreviewRequest == null) return;
 
         try {
-            captureSession.setRepeatingRequest(captureBuilder.build(), captureCallback, backGroundHandler);
+            captureSession.setRepeatingRequest(capturePreviewRequest, captureCallback, backGroundHandler);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -968,9 +964,9 @@ public class Scan extends Fragment {
     }
 
 
-    private void disableSnapshot(){
+    private void waitForSnapshotResult(){
         snapShotButton.setEnabled(false);
-        pausePreview();
+        stopPreview();
 
         Activity activity = getActivity();
 
