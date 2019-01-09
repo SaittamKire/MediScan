@@ -24,21 +24,6 @@
                 android:layout_marginLeft="10dp"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right">
-            <Button
-                android:id="@+id/btn_lang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@drawable/unitedkingdom_icon"
-                android:text="In English"
-                android:textSize="12dp"
-                android:textColor="#000"
-                android:textAllCaps="false"/>
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -48,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="@string/dialog_text_sv"
+        android:text="@string/dialog_text"
         android:textColor="@android:color/white"
         android:textSize="15dp"
         android:textStyle="bold" />
@@ -59,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="@string/dialog_text_disclaimer_sv"
+        android:text="@string/dialog_text_disclaimer"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="15dp"
@@ -80,7 +65,7 @@
             android:layout_marginTop="15dp"
             android:background="@android:color/background_light"
             android:clickable="true"
-            android:text="@string/dialog_text_ok_sv"
+            android:text="@string/dialog_text_ok"
             android:textColor="#5DBCD2"
             android:textStyle="bold"
             android:textSize="30dp"/>

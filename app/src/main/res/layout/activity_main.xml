@@ -47,17 +47,7 @@
             android:background="@drawable/information"
             android:textAlignment="center"
             android:gravity="left"/>
-            
 
-        <Button
-            android:id="@+id/language_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="2dp"
-            android:background="@drawable/sweden_england"
-            android:textAlignment="center"
-            android:gravity="left"/>
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.Toolbar>

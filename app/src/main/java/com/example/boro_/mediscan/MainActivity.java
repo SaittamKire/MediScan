@@ -1,15 +1,13 @@
 package com.example.boro_.mediscan;
 
-import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -19,25 +17,18 @@ import android.view.MenuItem;
 
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     /**
@@ -55,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private ListView mListView;
     public ApiHandler mApiHandler;
+    public MyDialogClass cdd;
+    public String SearchLanguage;
 
     Item item;
     ArrayList<String> listDataHeader;
@@ -65,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mApiHandler = new ApiHandler();
+        cdd = new MyDialogClass(this); //Creates disclaimer-dialog
+        SetupLanguage();
 
         initData();
 
@@ -110,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Dialog logic (NEEDS TO BE UPDATED TO LOOK UP IF THE USER HAS ACCEPTED THIS MESSAGE ALREADY)
-        MyDialogClass cdd = new MyDialogClass(this); //Creates disclaimer-dialog
         cdd.show(); //Shows it
         cdd.setCanceledOnTouchOutside(false); //Disables cancelations
         cdd.setCancelable(false);
@@ -280,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupButtons() {
 
+        /*Search bar Logic*/
         final EditText SearchBar = (EditText) findViewById(R.id.search_bar);
         SearchBar.setOnEditorActionListener( //Will setup Search bar logic, when user clicks okay a api call will be made!
                 new EditText.OnEditorActionListener() {
@@ -295,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                             if (event == null || !event.isShiftPressed()) {
                                 // the user is done typing.
                                 SearchValue = SearchBar.getText().toString();
-                                ApiFirstSearchNoStrengthCallback(SearchValue, "sv"); //Callback to get Context to ApiHandler
+                                ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
                                 return true; // consume.
                             }
                         }
@@ -304,13 +299,40 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        //ADD MORE BUTTON LOGIC
-
+        final Button InfoButton = (Button) findViewById(R.id.information_button);
+        InfoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                cdd.show(); //Shows it
+                cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+                cdd.setCancelable(false);
+            }
+        });
     }
 
-    public void ApiFirstSearchNoStrengthCallback(String name, String language) { //Need callback to get Context. REMOVE LANGUAGE IN AND MAKE APP-LANGUAGE SPECIFIC INSTEAD!
-        mApiHandler.FirstSearchNoStrength(name, language, this);
+
+    public void ApiFirstSearchNoStrengthCallback(String name) { //Need callback to get Context.
+        mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this);
     }
+
+    private void SetupLanguage(){
+
+        if (SearchLanguage == null) {
+            Locale locale = Resources.getSystem().getConfiguration().locale;
+            Locale.setDefault(locale);
+            //SaveSharedPreference.setUserLanguage(MainActivity.this, locale.getLanguage());
+            Configuration configuration = new Configuration();
+            configuration.locale = locale;
+            getBaseContext().getResources().updateConfiguration(configuration,
+                    getBaseContext().getResources().getDisplayMetrics());
+
+            if (locale.getLanguage() == "sv") {
+                SearchLanguage = "sv";
+            } else {
+                SearchLanguage = "en";
+            }
+        }
+    }
+
 }
 
 
