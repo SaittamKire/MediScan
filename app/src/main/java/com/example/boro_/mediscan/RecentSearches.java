@@ -10,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class RecentSearches extends Fragment {
 
     ListView mListView;
     SearchEntryListAdapter adapter;
     ArrayList<SearchEntry> LastSearches = new ArrayList<>();
+    List<String> recentSearchListTitle = new ArrayList<>();
 
 
 
@@ -23,7 +26,7 @@ public class RecentSearches extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        recentSearchListTitle = getArguments().getStringArrayList("listheaderTitle");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recentsearch, container, false);
     }
@@ -35,13 +38,14 @@ public class RecentSearches extends Fragment {
 
         mListView = view.findViewById(R.id.listView1);
 
+
         String text;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < recentSearchListTitle.size(); i++)
         {
             text = "Saved search :";
             text += i+1;
 
-            SearchEntry entry = new SearchEntry(text, text);
+            SearchEntry entry = new SearchEntry(recentSearchListTitle.get(i), text);
             LastSearches.add(entry);
         }
 
@@ -50,4 +54,5 @@ public class RecentSearches extends Fragment {
         mListView.setAdapter(adapter);
 
     }
+
 }

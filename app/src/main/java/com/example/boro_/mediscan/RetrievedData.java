@@ -76,46 +76,4 @@ public class RetrievedData extends Fragment {
 
     }
 
-
-
-    public void update()
-    {
-        //updateLists();
-
-        //UpdateListView();
-    }
-
-
-    public void UpdateListView(){
-
-        eListView = (ExpandableListView) view.findViewById(R.id.eLV);
-        eListAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listHash);
-        eListView.setIndicatorBounds(20, 100);
-        eListView.setAdapter(eListAdapter);
-
-        eListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    eListView.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
-            }
-        });
-
-        eListView.expandGroup(0);
-    }
-
-    public void updateLists(){
-
-
-        List<String> LDH = ((MainActivity)getActivity()).listDataHeader;
-        HashMap<String, List<String>> lh = ((MainActivity)getActivity()).listHash;
-        listDataHeader = LDH;
-        listHash = lh;
-        return;
-    }
-
 }

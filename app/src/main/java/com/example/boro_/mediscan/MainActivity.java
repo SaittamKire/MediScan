@@ -38,9 +38,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private ListView mListView;
+    BottomNavigationView bottomNavigationView;
+    Menu menuNav;
+    MenuItem tab1;
+    MenuItem tab3;
 
     Item item;
+    ArrayList<Item> RecentSearchesList = new ArrayList<>();
     ArrayList<String> listDataHeader;
+    ArrayList<String> recentSearchListTitle = new ArrayList<>();
     HashMap<String, List<String>> listHash;
 
     @Override
@@ -48,13 +54,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initData();
 
 
 
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
+        bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
+        menuNav=bottomNavigationView.getMenu();
+        tab1 = menuNav.findItem(R.id.recent_search_tab);
+        tab3 = menuNav.findItem(R.id.retrived_data_tab);
+        tab3.setEnabled(false);
+        tab1.setEnabled(false);
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,12 +77,16 @@ public class MainActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.recent_search_tab:
                                 selectedFragment = new RecentSearches();
+                                bundle.putStringArrayList("listheaderTitle", recentSearchListTitle);
+                                selectedFragment.setArguments(bundle);
                                 break;
                             case R.id.scan_tab:
                                 selectedFragment = new Scan();
                                 break;
                             case R.id.retrived_data_tab:
                                 selectedFragment = new RetrievedData();
+                                bundle.putSerializable("hashmap", listHash);
+                                bundle.putStringArrayList("listheader", listDataHeader);
                                 selectedFragment.setArguments(bundle);
                                 //((RetrievedData) selectedFragment).update();
                                 break;
@@ -191,27 +204,45 @@ public class MainActivity extends AppCompatActivity {
 
         List <String> Produkt = new ArrayList<>();
 
-        Produkt.add(item.Products.InternalID);
+        //Produkt.add(item.Products.InternalID);
         Produkt.add(item.Products.Name);
-        Produkt.add(item.Products.LegalName);
-        Produkt.add(item.Products.DateApproved);
-        Produkt.add(item.Products.Prescription);
-        Produkt.add(item.Products.ProductClassification);
+        //Produkt.add(item.Products.LegalName);
+        //Produkt.add(item.Products.DateApproved);
+        if (item.Products.Prescription.equals(""))
+        {
+            Produkt.add("Icke Receptbelagd");
+        }
+        else
+        {
+            Produkt.add(item.Products.Prescription);
+        }
+
+        Produkt.add(item.Products.PharmaceuticalForm);
+        //Produkt.add(item.Products.ProductClassification);
         Produkt.add(item.Products.Strength);
-        Produkt.add(item.Products.StrengthGroupNumber);
-        Produkt.add(item.Products.ApprovalNumber);
-        Produkt.add(item.Products.ClassificationAtcCode);
-        Produkt.add(item.Products.ControledMedicinalProduct);
+        //Produkt.add(item.Products.StrengthGroupNumber);
+        //Produkt.add(item.Products.ApprovalNumber);
+        //Produkt.add(item.Products.ClassificationAtcCode);
+        //Produkt.add(item.Products.ControledMedicinalProduct);
         Produkt.add(item.Products.NarcoticClassification);
         Produkt.add(item.Products.SalesStopped);
-        Produkt.add(item.Products.InterchangeabilityStartdate);
-        Produkt.add(item.Products.PharmaceuticalForm);
-        Produkt.add(item.Products.PharmaceuticalProductID);
-        Produkt.add(item.Products.ComprefName);
-        Produkt.add(item.Products.AuthorizationProcedure);
+        //Produkt.add(item.Products.InterchangeabilityStartdate);
+        //Produkt.add(item.Products.PharmaceuticalProductID);
+        //Produkt.add(item.Products.ComprefName);
+        //Produkt.add(item.Products.AuthorizationProcedure);
 
         List <String> Compounds = new ArrayList<>();
-        Compounds.add(item.Compositions.get(0).Name);
+        String compound = item.Compositions.get(0).RecommendedNameSV;
+
+        for (int j = 1; j < item.Compositions.size(); j++)
+        {
+            compound = compound.concat("\n");
+            compound = compound.concat(item.Compositions.get(j).RecommendedNameSV);
+        }
+
+        Compounds.add(compound);
+
+        /*Compounds.add(item.Compositions.get(0).Name);
         Compounds.add(item.Compositions.get(0).NarcoticClass);
         Compounds.add(item.Compositions.get(0).NarcoticClassSpecified);
         Compounds.add(item.Compositions.get(0).Quantity);
@@ -221,28 +252,68 @@ public class MainActivity extends AppCompatActivity {
         Compounds.add(item.Compositions.get(0).Relation);
         Compounds.add(item.Compositions.get(0).RelationRole);
         Compounds.add(item.Compositions.get(0).UnitAltName);
-        Compounds.add(item.Compositions.get(0).UnitTermName);
+        Compounds.add(item.Compositions.get(0).UnitTermName);*/
         List <String> OrgInfo = new ArrayList<>();
-        OrgInfo.add(item.Organizations.get(0).Orgname);
-        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr1);
-        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr2);
-        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr3);
-        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr4);
-        OrgInfo.add(item.Organizations.get(0).Country);
-        OrgInfo.add(item.Organizations.get(0).VatNo);
-        OrgInfo.add(item.Organizations.get(0).OrgUnitName);
-        OrgInfo.add(item.Organizations.get(0).OrgRole);
+        String adress;
+        for (int i = 0; i < item.Organizations.size(); i++)
+        {
+            OrgInfo.add(item.Organizations.get(i).Orgname);
+
+            adress = item.Organizations.get(i).OrgaddressAddr1;
+            if (!item.Organizations.get(i).OrgaddressAddr2.equals(""))
+            {
+                adress = adress.concat("\n");
+            }
+
+            adress = adress.concat(item.Organizations.get(i).OrgaddressAddr2);
+            if (!item.Organizations.get(i).OrgaddressAddr3.equals(""))
+            {
+            adress = adress.concat("\n");
+            }
+            adress = adress.concat(item.Organizations.get(i).OrgaddressAddr3);
+            if (!item.Organizations.get(i).OrgaddressAddr4.equals(""))
+            {
+                adress = adress.concat("\n");
+            }
+            adress = adress.concat(item.Organizations.get(i).OrgaddressAddr4);
+            OrgInfo.add(adress);
+            OrgInfo.add(item.Organizations.get(i).Country);
+            OrgInfo.add(item.Organizations.get(i).OrgRole);
+        }
+
+        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr1);
+        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr2);
+        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr3);
+        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr4);
+        //OrgInfo.add(item.Organizations.get(0).Country);
+        //OrgInfo.add(item.Organizations.get(0).VatNo);
+        //OrgInfo.add(item.Organizations.get(0).OrgUnitName);
+        //OrgInfo.add(item.Organizations.get(0).OrgRole);
 
         List <String> Package = new ArrayList<>();
-        Package.add(item.Packages.get(0).Text);
-        Package.add(item.Packages.get(0).Prescription);
-        Package.add(item.Packages.get(0).Safety_Features);
-        Package.add(item.Packages.get(0).ConditionID);
-        Package.add(item.Packages.get(0).PharmaceuticalProductID);
-        Package.add(item.Packages.get(0).ShelflifeValue);
-        Package.add(item.Packages.get(0).UnitName);
-        Package.add(item.Packages.get(0).StorageDescription);
-        Package.add(item.Packages.get(0).PackCondition);
+
+        for (int k = 0; k < item.Packages.size(); k++)
+        {
+            Package.add(item.Packages.get(k).Text);
+            String shelflife = item.Packages.get(k).ShelflifeValue;
+            shelflife = shelflife.concat(" ");
+            shelflife = shelflife.concat(item.Packages.get(k).UnitName);
+            Package.add(shelflife);
+            Package.add(item.Packages.get(k).StorageDescription);
+        }
+        //Package.add(item.Packages.get(0).Text);
+        //Package.add(item.Packages.get(0).Prescription);
+        //Package.add(item.Packages.get(0).Safety_Features);
+        //Package.add(item.Packages.get(0).ConditionID);
+        //Package.add(item.Packages.get(0).PharmaceuticalProductID);
+        //String shelflife = item.Packages.get(0).ShelflifeValue;
+        //shelflife = shelflife.concat(" ");
+        //shelflife = shelflife.concat(item.Packages.get(0).UnitName);
+        //Package.add(shelflife);
+        //Package.add(item.Packages.get(0).ShelflifeValue);
+        //Package.add(item.Packages.get(0).UnitName);
+        //Package.add(item.Packages.get(0).StorageDescription);
+        //Package.add(item.Packages.get(0).PackCondition);
 
         listHash.put(listDataHeader.get(0), Produkt);
         listHash.put(listDataHeader.get(1), Compounds);
@@ -250,12 +321,20 @@ public class MainActivity extends AppCompatActivity {
         listHash.put(listDataHeader.get(3), Package);
 
 
+        tab1.setEnabled(true);
+        tab3.setEnabled(true);
+        RecentSearchesList.add(0, item);
+        recentSearchListTitle.add(0, item.Products.Name);
+        ManageRecentSearches();
     }
 
-    public void updateView(List<String> lh, HashMap<String, List<String>> lhm)
+    void ManageRecentSearches()
     {
-        lh = listDataHeader;
-        lhm = listHash;
+        if (RecentSearchesList.size() > 10)
+        {
+            RecentSearchesList.remove(10);
+            recentSearchListTitle.remove(10);
+        }
     }
 
 }
