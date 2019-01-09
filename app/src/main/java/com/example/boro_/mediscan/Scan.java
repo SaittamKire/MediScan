@@ -90,10 +90,10 @@ public class Scan extends Fragment {
     private static final int PICTURE_TAKEN_STATE = 4;
     private int currentCameraState = 0;
 
-    private static final int RECOGNIZED_TEXT_SUCCESS = 0;
-    private static final int RECOGNIZED_TEXT_FAIL = 1;
+    //private static final int RECOGNIZED_TEXT_SUCCESS = 0;
+    //private static final int RECOGNIZED_TEXT_FAIL = 1;
 
-    private CameraManager cameraManager;
+    //private CameraManager cameraManager;
     private AutoFitTextureView cameraView;
     private ImageButton snapShotButton;
     private ProgressBar progressBar;
@@ -112,7 +112,7 @@ public class Scan extends Fragment {
     private HandlerThread backGroundThread;
     private Handler backGroundHandler;
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
-    private Handler uiHandler;
+    //private Handler uiHandler;
 
     //Size supported by preview window
     private final static int MAX_PREVIEW_HEIGHT = 1080;
@@ -199,9 +199,9 @@ public class Scan extends Fragment {
             return;
         }
 
-        cameraManager = (CameraManager) getContext().getSystemService(CAMERA_SERVICE);
-
         try {
+
+            CameraManager cameraManager = (CameraManager) getContext().getSystemService(CAMERA_SERVICE);
 
             selectedcameraId = null;
 
@@ -458,7 +458,7 @@ public class Scan extends Fragment {
         //Imagereader for images used for textrecognition
         imageReader = ImageReader.newInstance(TEXT_CAPTURE_WIDTH, TEXT_CAPTURE_HEIGHT, ImageFormat.YUV_420_888, 1);
 
-        uiHandler = new Handler(Looper.getMainLooper()){
+    /*    uiHandler = new Handler(Looper.getMainLooper()){
 
             @Override
             public void handleMessage(Message msg) {
@@ -467,7 +467,7 @@ public class Scan extends Fragment {
 
                     //Get Firebase text object
                     case RECOGNIZED_TEXT_SUCCESS:
-                        
+
                         getImageStrings((FirebaseVisionDocumentText)msg.obj);
 
                         break;
@@ -485,7 +485,7 @@ public class Scan extends Fragment {
                 }
 
             }
-        };
+        };*/
 
         //Setup a capture request
         try {
@@ -623,6 +623,7 @@ public class Scan extends Fragment {
 
     private void focusLock(){
 
+
         try {
 
             captureBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START);
@@ -673,6 +674,11 @@ public class Scan extends Fragment {
     private void snapImage(){
 
         try {
+
+            final Activity activity = getActivity();
+            if (null == activity || null == cameraDevice) {
+                return;
+            }
 
             CaptureRequest.Builder snapCaptureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
             snapCaptureBuilder.addTarget(imageReader.getSurface());
@@ -882,14 +888,17 @@ public class Scan extends Fragment {
 
                             Log.d("FIREBASE_TEXT_REC", firebaseVisionDocumentText.getText());
 
+                            getImageStrings(firebaseVisionDocumentText);
                             //TODO Send the text object to UI thread? Or work with it here?
-                            Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_SUCCESS,firebaseVisionDocumentText);
-                            message_obj.sendToTarget();
+                            //Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_SUCCESS,firebaseVisionDocumentText);
+                            //message_obj.sendToTarget();
 
                         }
                         else{
-                            Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_FAIL,"Unable to detect text, please try again.");
-                            message_obj.sendToTarget();
+                            //Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_FAIL,"Unable to detect text, please try again.");
+                            //message_obj.sendToTarget();
+                            showToast("Unable to detect text, please try again.");
+                            enableSnapShot();
                         }
 
                     }
@@ -898,10 +907,11 @@ public class Scan extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
 
-                        //TODO Send the text object to UI thread? Or work with it here?
-                        Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_FAIL,e.getMessage());
-                        message_obj.sendToTarget();
-
+                        //TODO Handle error when no network for example
+                        //Message message_obj = uiHandler.obtainMessage(RECOGNIZED_TEXT_FAIL,e.getMessage());
+                        //message_obj.sendToTarget();
+                        showToast(e.getMessage());
+                        enableSnapShot();
                     }
                 });
             }
@@ -916,12 +926,15 @@ public class Scan extends Fragment {
             //Intent intent = new Intent(this, Main2Activity.class); // Creates and intent to show the info
             //intent.putExtra(EXTRA_MESSAGE,drug); // put text into
             //startActivity(intent); // start the activity which contains the drug information.
-            enableSnapShot();
-            //TODO Send json to it's intended page
+
+            //TODO Send jsonObject to it's intended page
             showToast(drug);
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        finally {
+            enableSnapShot();
         }
     }
 
@@ -934,7 +947,8 @@ public class Scan extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals("[]")){  // The API we have sends this if there is nothing to fetch so this is the same as 404
-                            Toast.makeText(getContext(), "Could not find matching product", Toast.LENGTH_SHORT).show(); //TODO Better Error Handling please.
+                            //Toast.makeText(getContext(), "Could not find matching product", Toast.LENGTH_SHORT).show(); //TODO Better Error Handling please.
+                            showToast("Could not find a matching product.");
                             enableSnapShot();
                             return;
                         }
@@ -951,8 +965,10 @@ public class Scan extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                mTextView.setText("That didn't work!");
-                Toast.makeText(getContext(), "Could not communicate with database. Try again later.", Toast.LENGTH_SHORT).show();
+//
+                //TODO Handle different volley errors
+                showToast(error.getMessage());
+                //Toast.makeText(getContext(), "Could not communicate with database. Try again later.", Toast.LENGTH_SHORT).show();
                 enableSnapShot();
             }
         });
@@ -960,11 +976,10 @@ public class Scan extends Fragment {
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
 
-
     }
 
-
     private void waitForSnapshotResult(){
+
         snapShotButton.setEnabled(false);
         stopPreview();
 
@@ -1061,7 +1076,7 @@ public class Scan extends Fragment {
                                            @NonNull int[] grantResults) {
         if (requestCode == 1) {
             if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-
+                //TODO If permissions is not granted
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
