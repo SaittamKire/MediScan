@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mListView;
     public ApiHandler mApiHandler;
 
+    Item item;
     ArrayList<String> listDataHeader;
     HashMap<String, List<String>> listHash;
 
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         mApiHandler = new ApiHandler();
 
         initData();
+
+
 
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.retrived_data_tab:
                                 selectedFragment = new RetrievedData();
                                 selectedFragment.setArguments(bundle);
+                                //((RetrievedData) selectedFragment).update();
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -143,6 +147,19 @@ public class MainActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
 
+    public void CreateItem(JSONObject object){
+
+        item = new Item(object);
+
+        initData2(item);
+
+        return;
+
+
+
+    }
+
+
     private void initData() {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
@@ -183,8 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-    public void initData2() {
+    public void initData2(Item item) {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
@@ -194,28 +210,60 @@ public class MainActivity extends AppCompatActivity {
         listDataHeader.add("Organisationsinfo");
         listDataHeader.add("Förpackning");
 
-        List<String> Produkt = new ArrayList<>();
-        Produkt.add("Alvedon");
-        Produkt.add("Receptfritt");
-        Produkt.add("Läkemedel");
-        Produkt.add("500mg");
-        Produkt.add("Filmdragerad tablett");
-        Produkt.add("Ej narkotikaklassad");
-        Produkt.add("N");
+        List <String> Produkt = new ArrayList<>();
 
-        List<String> Compounds = new ArrayList<>();
-        Compounds.add("Paracetamol");
+        Produkt.add(item.Products.InternalID);
+        Produkt.add(item.Products.Name);
+        Produkt.add(item.Products.LegalName);
+        Produkt.add(item.Products.DateApproved);
+        Produkt.add(item.Products.Prescription);
+        Produkt.add(item.Products.ProductClassification);
+        Produkt.add(item.Products.Strength);
+        Produkt.add(item.Products.StrengthGroupNumber);
+        Produkt.add(item.Products.ApprovalNumber);
+        Produkt.add(item.Products.ClassificationAtcCode);
+        Produkt.add(item.Products.ControledMedicinalProduct);
+        Produkt.add(item.Products.NarcoticClassification);
+        Produkt.add(item.Products.SalesStopped);
+        Produkt.add(item.Products.InterchangeabilityStartdate);
+        Produkt.add(item.Products.PharmaceuticalForm);
+        Produkt.add(item.Products.PharmaceuticalProductID);
+        Produkt.add(item.Products.ComprefName);
+        Produkt.add(item.Products.AuthorizationProcedure);
 
-        List<String> OrgInfo = new ArrayList<>();
-        OrgInfo.add("Alvedon AB");
-        OrgInfo.add("Alvedonvägen 56");
-        OrgInfo.add("Sverige");
-        OrgInfo.add("Innehavare av godkännande för försäljning");
+        List <String> Compounds = new ArrayList<>();
+        Compounds.add(item.Compositions.get(0).Name);
+        Compounds.add(item.Compositions.get(0).NarcoticClass);
+        Compounds.add(item.Compositions.get(0).NarcoticClassSpecified);
+        Compounds.add(item.Compositions.get(0).Quantity);
+        Compounds.add(item.Compositions.get(0).RecommendedNameEN);
+        Compounds.add(item.Compositions.get(0).RecommendedNameSV);
+        Compounds.add(item.Compositions.get(0).RelatedToID);
+        Compounds.add(item.Compositions.get(0).Relation);
+        Compounds.add(item.Compositions.get(0).RelationRole);
+        Compounds.add(item.Compositions.get(0).UnitAltName);
+        Compounds.add(item.Compositions.get(0).UnitTermName);
+        List <String> OrgInfo = new ArrayList<>();
+        OrgInfo.add(item.Organizations.get(0).Orgname);
+        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr1);
+        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr2);
+        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr3);
+        OrgInfo.add(item.Organizations.get(0).OrgaddressAddr4);
+        OrgInfo.add(item.Organizations.get(0).Country);
+        OrgInfo.add(item.Organizations.get(0).VatNo);
+        OrgInfo.add(item.Organizations.get(0).OrgUnitName);
+        OrgInfo.add(item.Organizations.get(0).OrgRole);
 
-        List<String> Package = new ArrayList<>();
-        Package.add("Burk, 2000 tabletter");
-        Package.add("20 år");
-        Package.add("Förvaras med fördel i ugn");
+        List <String> Package = new ArrayList<>();
+        Package.add(item.Packages.get(0).Text);
+        Package.add(item.Packages.get(0).Prescription);
+        Package.add(item.Packages.get(0).Safety_Features);
+        Package.add(item.Packages.get(0).ConditionID);
+        Package.add(item.Packages.get(0).PharmaceuticalProductID);
+        Package.add(item.Packages.get(0).ShelflifeValue);
+        Package.add(item.Packages.get(0).UnitName);
+        Package.add(item.Packages.get(0).StorageDescription);
+        Package.add(item.Packages.get(0).PackCondition);
 
         listHash.put(listDataHeader.get(0), Produkt);
         listHash.put(listDataHeader.get(1), Compounds);

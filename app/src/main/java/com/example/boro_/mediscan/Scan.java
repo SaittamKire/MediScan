@@ -931,16 +931,57 @@ public class Scan extends Fragment {
             //Intent intent = new Intent(this, Main2Activity.class); // Creates and intent to show the info
             //intent.putExtra(EXTRA_MESSAGE,drug); // put text into
             //startActivity(intent); // start the activity which contains the drug information.
-
-            //TODO Send jsonObject to it's intended page
+            enableSnapShot();
+            //TODO Send json to it's intended page
             showToast(drug);
+            //Item item = new Item(drugs, getContext().getApplicationContext());
 
+            //((MainActivity)getActivity()).CreateItem(drugs);
+            SecondSearch(drugs);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        finally {
-            enableSnapShot();
-        }
+    }
+
+    public void SecondSearch(JSONObject object){
+
+        String InternalID = object.optString("InternalID");
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String url ="http://213.66.251.184/Bottles/BottlesService.asmx/SecondSearch?id="+InternalID+"&language_sv_en=sv";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+                            ((MainActivity)getActivity()).CreateItem(obj);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Display the first 500 characters of the response string.
+                        //                       mTextView.setText("Response is: "+ response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                mTextView.setText("That didn't work!");
+                Toast.makeText(getContext(), "Could not communicate with database. Try again later.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+
+
+
+
+
     }
 
     public void getImageStrings(FirebaseVisionDocumentText result){
