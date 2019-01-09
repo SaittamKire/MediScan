@@ -73,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment = new Scan();
                                 break;
                             case R.id.retrived_data_tab:
-                                selectedFragment = new RetrievedData(); selectedFragment.setArguments(bundle);
+                                selectedFragment = new RetrievedData();
+                                selectedFragment.setArguments(bundle);
+                                //((RetrievedData) selectedFragment).update();
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

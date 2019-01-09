@@ -76,21 +76,13 @@ public class RetrievedData extends Fragment {
 
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // Refresh your fragment here
-            update();
-        }
-    }
 
 
     public void update()
     {
-        updateLists();
+        //updateLists();
 
-        UpdateListView();
+        //UpdateListView();
     }
 
 
