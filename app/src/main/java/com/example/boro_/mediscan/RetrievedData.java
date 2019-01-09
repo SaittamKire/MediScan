@@ -58,16 +58,16 @@ public class RetrievedData extends Fragment {
         eListView.setAdapter(eListAdapter);
 
         eListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int previousItem = -1;
 
             @Override
             public void onGroupExpand(int groupPosition) {
-                if (lastExpandedPosition != -1
-                        && groupPosition != lastExpandedPosition) {
-                    eListView.collapseGroup(lastExpandedPosition);
-                }
-                lastExpandedPosition = groupPosition;
+                if(groupPosition != previousItem )
+                    eListView.collapseGroup(previousItem );
+                previousItem = groupPosition;
             }
         });
+
 
         eListView.expandGroup(0);
 

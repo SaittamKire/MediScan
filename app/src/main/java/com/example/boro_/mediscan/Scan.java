@@ -139,6 +139,11 @@ public class Scan extends Fragment {
 
     }
 
+    public static Scan newInstance() {
+        Scan fragment = new Scan();
+        return fragment;
+    }
+
     private void startBackGroundThread(){
         backGroundThread = new HandlerThread("Background Thread");
         backGroundThread.start();
