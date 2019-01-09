@@ -25,6 +25,7 @@ public class RetrievedData extends Fragment {
     List<String> listDataHeader;
     HashMap<String, List<String>> listHash;
     private int lastExpandedPosition =-1;
+    View view;
 
     @Override
     public void onResume() {
@@ -51,6 +52,7 @@ public class RetrievedData extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.view = view;
 
         eListView = (ExpandableListView) view.findViewById(R.id.eLV);
         eListAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listHash);
@@ -86,9 +88,42 @@ public class RetrievedData extends Fragment {
 
     public void update()
     {
-        ((MainActivity)getActivity()).updateView(listDataHeader, listHash);
-        eListAdapter.notifyDataSetChanged();
+        updateLists();
+
+        UpdateListView();
     }
 
+
+    public void UpdateListView(){
+
+        eListView = (ExpandableListView) view.findViewById(R.id.eLV);
+        eListAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listHash);
+        eListView.setIndicatorBounds(20, 100);
+        eListView.setAdapter(eListAdapter);
+
+        eListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    eListView.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+
+        eListView.expandGroup(0);
+    }
+
+    public void updateLists(){
+
+
+        List<String> LDH = ((MainActivity)getActivity()).listDataHeader;
+        HashMap<String, List<String>> lh = ((MainActivity)getActivity()).listHash;
+        listDataHeader = LDH;
+        listHash = lh;
+        return;
+    }
 
 }
