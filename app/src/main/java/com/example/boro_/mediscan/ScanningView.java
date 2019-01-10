@@ -1,5 +1,7 @@
 package com.example.boro_.mediscan;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,12 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -30,8 +29,6 @@ public class ScanningView extends View {
     private Boolean isReversing = false;
     private static final int SCAN_ORIENTATION_VERTICAL = 0;
     private static final int SCAN_ORIENTATION_HORIZONTAL = 1;
-
-    //public enum ScanOrientation {SCAN_ORIENTATION_VERTICAL, SCAN_ORIENTATION_HORIZONTAL};
 
 
     public ScanningView(Context context) {
@@ -74,6 +71,7 @@ public class ScanningView extends View {
 
         setAnimationDuration(typedArray.getInteger(R.styleable.ScanningView_animation_speed,800));
 
+        typedArray.recycle();
     }
 
     ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener(){
@@ -228,10 +226,21 @@ public class ScanningView extends View {
         this.scanBarColor = color;
     }
 
-    public void startScanAnimation(){
+    public void startScanAnimation(final onScanEndCallback animationCallback){
+
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animationCallback.onScanComplete();
+            }
+        });
 
         valueAnimator.start();
     }
 
+    public interface onScanEndCallback {
+
+        void onScanComplete();
+    }
 
 }

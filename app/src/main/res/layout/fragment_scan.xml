@@ -19,9 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:animation_orientation="vertical"
-        app:animation_speed="500"
+        app:animation_speed="300"
         app:scanbar_opacity="120"
-        app:scanbar_thickness="250"
+        app:scanbar_thickness="400"
         app:scanbar_color="@color/colorPrimary"/>
 
 

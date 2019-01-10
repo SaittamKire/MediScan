@@ -183,8 +183,13 @@ public class Scan extends Fragment {
         public void onClick(View v) {
 
             //Begin the photo capture process
-            scanView.startScanAnimation();
-            focusLock();
+            scanView.startScanAnimation(new ScanningView.onScanEndCallback() {
+                @Override
+                public void onScanComplete() {
+                    focusLock();
+                }
+            });
+
         }
     };
 
