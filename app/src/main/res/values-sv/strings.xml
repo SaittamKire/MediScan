@@ -1,9 +1,9 @@
 <resources>
     //Application
     <string name="app_name">MediScan</string>
-    <string name="tab_text_1">Nyaste Sökningarna</string>
+    <string name="tab_text_1">Sökhistorik</string>
     <string name="tab_text_2">Scanna</string>
-    <string name="tab_text_3">Hämta Data</string>
+    <string name="tab_text_3">Produktinfo</string>
     <string name="action_settings">Inställningar</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="take_photo">Ta ett Kort!</string>

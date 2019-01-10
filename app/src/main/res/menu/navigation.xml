@@ -3,16 +3,20 @@
 
     <item
         android:id="@+id/recent_search_tab"
-        android:icon="@drawable/plus"
+        android:icon="@drawable/recent_icon"
+        android:checked="false"
         android:title="@string/tab_text_1"/>
 
     <item
         android:id="@+id/scan_tab"
-        android:icon="@drawable/minus"
-        android:title="@string/tab_text_2"/>
+        android:icon="@drawable/scan_icon"
+        android:title="@string/tab_text_2"
+        android:checked="true" />
 
     <item
         android:id="@+id/retrived_data_tab"
-        android:title="@string/tab_text_3"/>
+        android:icon="@drawable/search_icon"
+        android:title="@string/tab_text_3"
+        android:checked="false"/>
 
 </menu>

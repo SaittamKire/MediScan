@@ -14,8 +14,10 @@
         android:textAlignment="gravity"
         android:textColor="@color/colorTabText"
         android:textSize="22dp"
-        android:drawableLeft="@drawable/bullet"
+        android:drawableLeft="@drawable/list_pin"
         android:drawablePadding="8dp"
         android:padding="15dp"
-        android:layout_weight="100"/>
+        android:layout_weight="100"
+        android:clickable="true"
+        android:onClick="PickEntry"/>
 </LinearLayout>

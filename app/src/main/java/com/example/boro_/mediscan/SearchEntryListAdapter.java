@@ -1,5 +1,6 @@
 package com.example.boro_.mediscan;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ public class SearchEntryListAdapter extends ArrayAdapter<SearchEntry> {
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         String name = getItem(position).getName();
 
@@ -34,8 +35,20 @@ public class SearchEntryListAdapter extends ArrayAdapter<SearchEntry> {
 
         TextView tvName = (TextView) convertView.findViewById(R.id.recentSearch);
 
+        tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateSearchEntry(position);
+            }
+        });
+
         tvName.setText(name);
 
         return convertView;
     }
+
+        public void updateSearchEntry (int number)
+        {
+            ((MainActivity)getContext()).changeRetrievedData(number);
+        }
 }

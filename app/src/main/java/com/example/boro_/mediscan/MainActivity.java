@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         tab3 = menuNav.findItem(R.id.retrived_data_tab);
         tab3.setEnabled(false);
         tab1.setEnabled(false);
+        menuNav.findItem(R.id.scan_tab).setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -208,6 +209,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public void changeRetrievedData(int i)
+    {
+        if (RecentSearchesList.get(i) != null)
+        {
+            initData2(RecentSearchesList.get(i));
+        }
+    }
+
     public void initData2(Item item) {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();

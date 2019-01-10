@@ -4,11 +4,11 @@
         android:top="25dp"
         android:bottom="25dp"
         android:left="25dp"
-        android:right="-30dp"/>
+        android:right="-30dp" />
 
     <item android:drawable="@drawable/plus"
         android:top="25dp"
         android:bottom="25dp"
         android:left="25dp"
-        android:right="-30dp"></item>
+        android:right="-30dp"/>
 </selector>

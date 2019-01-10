@@ -12,16 +12,17 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
                 android:textSize="20dp"
-                android:layout_marginLeft="10dp"/>
+                android:textAlignment="gravity"
+                android:gravity="center_horizontal"/>
         </LinearLayout>
 
 
@@ -34,7 +35,7 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:text="@string/dialog_text"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorTabText"
         android:textSize="15dp"
         android:textStyle="bold" />
 
@@ -46,7 +47,7 @@
         android:layout_margin="10dp"
         android:text="@string/dialog_text_disclaimer"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorTabText"
         android:textSize="15dp"
         android:textStyle="bold" />
 
