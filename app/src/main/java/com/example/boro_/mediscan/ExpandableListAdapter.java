@@ -89,7 +89,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView txtListChild = (TextView)convertView.findViewById(R.id.lbListItem);
         TextView txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemTitle);
         txtListChild.setText(childText);
-
+        int Pos = 0;
         switch (groupPosition) //Nested switch-case to give the correct title to the layout input
         {
             case 0:
@@ -136,7 +136,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         break;
                 }break;
             case 3:
-                switch (childPosition) {
+                Pos = childPosition % 3;
+                switch (Pos) {
                     case 0:
                         txtListChildTitle.setText(R.string.packageType);
                         break;

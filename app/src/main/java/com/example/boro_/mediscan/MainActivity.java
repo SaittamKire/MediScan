@@ -48,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     Menu menuNav;
     MenuItem tab1;
+    MenuItem tab2;
     MenuItem tab3;
+    boolean tabCreated = false;
     public ApiHandler mApiHandler;
     public MyDialogClass cdd;
     public String SearchLanguage;
@@ -75,10 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.bottom_navigation);
         menuNav=bottomNavigationView.getMenu();
         tab1 = menuNav.findItem(R.id.recent_search_tab);
+        tab2 = menuNav.findItem(R.id.scan_tab);
         tab3 = menuNav.findItem(R.id.retrived_data_tab);
-        tab3.setEnabled(false);
-        tab1.setEnabled(false);
-        menuNav.findItem(R.id.scan_tab).setChecked(true);
+        tab3.setEnabled(tabCreated);
+        tab1.setEnabled(tabCreated);
+        tab2.setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -162,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
 
         initData2(item);
 
+        RecentSearchesList.add(0, item);
+        recentSearchListTitle.add(0, item.Products.Name);
+
         return;
 
 
@@ -215,6 +221,12 @@ public class MainActivity extends AppCompatActivity {
         if (RecentSearchesList.get(i) != null)
         {
             initData2(RecentSearchesList.get(i));
+            Item item = RecentSearchesList.get(i);
+            String title = recentSearchListTitle.get(i);
+            recentSearchListTitle.remove(i);
+            recentSearchListTitle.add(0, title);
+            RecentSearchesList.remove(i);
+            RecentSearchesList.add(0, item);
         }
     }
 
@@ -349,9 +361,9 @@ public class MainActivity extends AppCompatActivity {
 
         tab1.setEnabled(true);
         tab3.setEnabled(true);
-        RecentSearchesList.add(0, item);
-        recentSearchListTitle.add(0, item.Products.Name);
+        tabCreated = true;
         ManageRecentSearches();
+        bottomNavigationView.setSelectedItemId(R.id.retrived_data_tab);
     }
 
     void ManageRecentSearches()
