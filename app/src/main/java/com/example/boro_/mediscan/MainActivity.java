@@ -1,27 +1,34 @@
 package com.example.boro_.mediscan;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     /**
@@ -42,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     Menu menuNav;
     MenuItem tab1;
     MenuItem tab3;
+    public ApiHandler mApiHandler;
+    public MyDialogClass cdd;
+    public String SearchLanguage;
 
     Item item;
     ArrayList<Item> RecentSearchesList = new ArrayList<>();
@@ -53,7 +63,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mApiHandler = new ApiHandler();
+        cdd = new MyDialogClass(this); //Creates disclaimer-dialog
+        SetupLanguage();
 
+        initData();
 
 
 
@@ -104,12 +118,14 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
 
 
-        //Dialog logic
-        MyDialogClass cdd = new MyDialogClass(this); //Creates disclaimer-dialog
+        //Dialog logic (NEEDS TO BE UPDATED TO LOOK UP IF THE USER HAS ACCEPTED THIS MESSAGE ALREADY)
         cdd.show(); //Shows it
         cdd.setCanceledOnTouchOutside(false); //Disables cancelations
         cdd.setCancelable(false);
         //End dialog logic
+
+        setupButtons(); //Will setup topbar buttons and searchfield
+
     }
 
 
@@ -337,4 +353,67 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupButtons() {
+
+        /*Search bar Logic*/
+        final EditText SearchBar = (EditText) findViewById(R.id.search_bar);
+        SearchBar.setOnEditorActionListener( //Will setup Search bar logic, when user clicks okay a api call will be made!
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        String SearchValue = null;
+
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                                actionId == EditorInfo.IME_ACTION_DONE ||
+                                event != null &&
+                                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            if (event == null || !event.isShiftPressed()) {
+                                // the user is done typing.
+                                SearchValue = SearchBar.getText().toString();
+                                ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
+                                return true; // consume.
+                            }
+                        }
+                        return false; // pass on to other listeners.
+                    }
+                }
+        );
+
+        final Button InfoButton = (Button) findViewById(R.id.information_button);
+        InfoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                cdd.show(); //Shows it
+                cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+                cdd.setCancelable(false);
+            }
+        });
+    }
+
+
+    public void ApiFirstSearchNoStrengthCallback(String name) { //Need callback to get Context.
+        mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this);
+    }
+
+    private void SetupLanguage(){
+
+        if (SearchLanguage == null) {
+            Locale locale = Resources.getSystem().getConfiguration().locale;
+            Locale.setDefault(locale);
+            //SaveSharedPreference.setUserLanguage(MainActivity.this, locale.getLanguage());
+            Configuration configuration = new Configuration();
+            configuration.locale = locale;
+            getBaseContext().getResources().updateConfiguration(configuration,
+                    getBaseContext().getResources().getDisplayMetrics());
+
+            if (locale.getLanguage() == "sv") {
+                SearchLanguage = "sv";
+            } else {
+                SearchLanguage = "en";
+            }
+        }
+    }
+
 }
+
+

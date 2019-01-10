@@ -25,10 +25,13 @@
             android:layout_height="50dp">
 
     <EditText
+        android:id="@+id/search_bar"
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:hint="@string/search"/>
+        android:hint="@string/search"
+        android:inputType="textNoSuggestions"
+        android:singleLine="true"/>
         </LinearLayout>
 
         <LinearLayout
@@ -36,23 +39,15 @@
             android:layout_height="wrap_content"
             android:gravity="right">
         <Button
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="2dp"
-        android:background="@drawable/sweden_england"
-        android:textAlignment="center"
-        android:gravity="left"/>
-            
-
-        <Button
+            android:id="@+id/information_button"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="2dp"
-            android:background="@drawable/sweden_england"
+            android:background="@drawable/information"
             android:textAlignment="center"
             android:gravity="left"/>
+
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.Toolbar>

@@ -35,12 +35,8 @@
 
 
     //Wakeup Dialog Strings
-    <string name="dialog_text_sv">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>
-    <string name="dialog_text_disclaimer_sv">Genom att klicka på \"JA \" godkänner du dessa vilkor</string>
-    <string name="dialog_text_ok_sv">Ja</string>
-
-    <string name="dialog_text_en">The user is responsible for their own decisions made by the presented data. Make sure that the correct medicine is presented on screen after a search has been made. The creators of this application is not responsible for injury or death.</string>
-    <string name="dialog_text_disclaimer_en"> By clicking \"YES\" you accept these conditions</string>
-    <string name="dialog_text_ok_en">Yes</string>
+    <string name="dialog_text">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>
+    <string name="dialog_text_disclaimer">Genom att klicka på \"JA \" godkänner du dessa vilkor</string>
+    <string name="dialog_text_ok">Ja</string>
 
 </resources>
