@@ -43,4 +43,8 @@
     <string name="dialog_text_disclaimer"> By clicking \"YES\" you accept these conditions</string>
     <string name="dialog_text_ok">Yes</string>
 
+    //Camera related
+    <string name="no_text_found">Unable to detect text, please try again.</string>
+    <string name="no_product_match">Could not find a matching product.</string>
+
 </resources>

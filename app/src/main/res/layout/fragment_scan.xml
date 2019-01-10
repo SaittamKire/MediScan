@@ -9,13 +9,26 @@
     <com.example.boro_.mediscan.CameraTextRecognition.AutoFitTextureView
         android:id="@+id/previewWindow"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"/>
+
+
+    <com.example.boro_.mediscan.ScanningView
+        android:id="@+id/scanView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:animation_orientation="vertical"
+        app:animation_speed="500"
+        app:scanbar_opacity="120"
+        app:scanbar_thickness="250"
+        app:scanbar_color="@color/colorPrimary"/>
+
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_alignParentBottom="true">
-
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -24,13 +37,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"/>
 
-        <ImageButton
+<!--        <ImageButton
             android:id="@+id/cameraSnap"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@android:drawable/ic_menu_camera" />-->
 
     </FrameLayout>
 

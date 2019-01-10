@@ -11,6 +11,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <com.example.boro_.mediscan.ScanningView
+        android:id="@+id/scanView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:animation_orientation="vertical"
+        app:animation_speed="500"
+        app:scanbar_opacity="120"
+        app:scanbar_thickness="250"
+        app:scanbar_color="@color/colorPrimary"/>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,14 +35,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
 
-        <ImageButton
+  <!--      <ImageButton
             android:id="@+id/cameraSnap"
             android:layout_width="84dp"
             android:layout_height="84dp"
             android:layout_marginEnd="40dp"
 
             android:layout_gravity="end|center_vertical"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            app:srcCompat="@android:drawable/ic_menu_camera" />-->
 
     </FrameLayout>
 

@@ -39,4 +39,8 @@
     <string name="dialog_text_disclaimer">Genom att klicka på \"JA \" godkänner du dessa vilkor</string>
     <string name="dialog_text_ok">Ja</string>
 
+    //Camera related
+    <string name="no_text_found">Ingen text hittad. Var vänlig försök igen.</string>
+    <string name="no_product_match">Kunde inte hitta en matchande produkt.</string>
+
 </resources>
