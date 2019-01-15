@@ -1,9 +1,11 @@
 package com.example.boro_.mediscan;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -276,15 +278,16 @@ public class MainActivity extends AppCompatActivity {
         //Produkt.add(item.Products.AuthorizationProcedure);
 
         List <String> Compounds = new ArrayList<>();
-        String compound = item.Compositions.get(0).RecommendedNameSV;
+        Compounds.add(0, "Title");
 
-        for (int j = 1; j < item.Compositions.size(); j++)
+        for (int j = 0; j < item.Compositions.size(); j++)
         {
-            compound = compound.concat("\n");
-            compound = compound.concat(item.Compositions.get(j).RecommendedNameSV);
+            String compound = item.Compositions.get(j).RecommendedNameSV;
+            String compoundUpperCase = compound.substring(0, 1).toUpperCase() + compound.substring(1);
+
+            Compounds.add(compoundUpperCase);
         }
 
-        Compounds.add(compound);
 
         /*Compounds.add(item.Compositions.get(0).Name);
         Compounds.add(item.Compositions.get(0).NarcoticClass);
@@ -458,6 +461,14 @@ public class MainActivity extends AppCompatActivity {
                 SearchLanguage = "en";
             }
         }
+    }
+
+    public void SubstanceSearch (String input)
+    {
+        String search = "https://www.google.com/search?q=";
+        search = search.concat(input);
+        Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(search));
+        startActivity(browsIntent);
     }
 
 }

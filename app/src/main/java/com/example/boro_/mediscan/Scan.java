@@ -79,7 +79,7 @@ import static android.content.Context.CAMERA_SERVICE;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Scan extends Fragment {
+public class    Scan extends Fragment {
 
     private static final int PREVIEW_STATE = 0;
     private static final int AWAIT_LOCK_STATE = 1;
