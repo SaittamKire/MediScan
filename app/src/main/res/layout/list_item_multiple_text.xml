@@ -3,13 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_marginBottom="30dp">
+    android:orientation="vertical">
 
 
     <TextView
-        android:id="@+id/lbListItemTitle"
-        android:paddingTop="5dp"
+        android:id="@+id/lbListItemPackagesHeader"
+        android:paddingTop="2dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:textSize="16sp"
         android:layout_marginLeft="20dp"
@@ -19,19 +18,15 @@
         android:textColor="@color/colorTabText" />
 
     <TextView
-        android:id="@+id/lbListItem"
-        android:paddingTop="5dp"
+        android:id="@+id/lbListItemPackagesItem"
+        android:paddingTop="2dp"
+        android:layout_marginLeft="20dp"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
         android:textSize="16sp"
-        android:layout_marginLeft="20dp"
         android:textColor="@color/colorTabText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true" />
+        android:layout_height="wrap_content" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
 
 
 </LinearLayout>

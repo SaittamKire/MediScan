@@ -1,6 +1,7 @@
 package com.example.boro_.mediscan;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,20 +9,30 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private List<String> listDataHeader;
+    private List<String> listDataHeader, orgTitles, packTitles;
     private HashMap<String, List<String>> listHashMap;
+    private HashMap<String, List<String>> organizationsMap = new HashMap<>();
+    private HashMap<String, List<String>> packagesMap = new HashMap<>();
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listHashMap) {
         this.context = context;
         this.listDataHeader = listDataHeader;
         this.listHashMap = listHashMap;
+        //getPackageMap();
+        //getOrganizationsMap();
+
     }
+
+
 
 
     @Override
@@ -79,20 +90,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final String childText = (String)getChild(groupPosition, childPosition);
-        if (convertView == null)
-        {
-            LayoutInflater inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item, null);
-        }
+        LayoutInflater inflater;
 
 
-        TextView txtListChild = (TextView)convertView.findViewById(R.id.lbListItem);
-        TextView txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemTitle);
-        txtListChild.setText(childText);
+        TextView txtListChild;
+        TextView txtListChildTitle;
         int Pos = 0;
         switch (groupPosition) //Nested switch-case to give the correct title to the layout input
         {
             case 0:
+                inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.list_item, null);
+                txtListChild = (TextView)convertView.findViewById(R.id.lbListItem);
+                txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemTitle);
+                txtListChild.setText(childText);
                 switch (childPosition)
                 {
                     case 0:
@@ -118,20 +129,72 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         break;
                 } break;
             case 1:
-                txtListChildTitle.setText(R.string.compounds);
+                if (childPosition == 0)
+                {
+                    inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.list_item_multiple_title, null);
+                    txtListChildTitle = convertView.findViewById(R.id.lbListItemPackagesTitle);
+                    txtListChildTitle.setText(R.string.compounds);
+                }
+                else
+                {
+                    inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.list_item_substances, null);
+                    txtListChild = (TextView)convertView.findViewById(R.id.lbListItemSubstances);
+                    txtListChild.setText(childText);
+                    txtListChild.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Search(childText);
+                        }
+                    });
+                }
                 break;
             case 2:
-                switch (childPosition) {
+                inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.list_item, null);
+                txtListChild = (TextView)convertView.findViewById(R.id.lbListItem);
+                txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemTitle);
+                txtListChild.setText(childText);
+                Pos = childPosition % 4;
+                switch (Pos) {
                     case 0:
-                        txtListChildTitle.setText(R.string.orgName);
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_title, null);
+                        txtListChildTitle = convertView.findViewById(R.id.lbListItemPackagesTitle);
+                        if (txtListChildTitle == null)
+                            break;
+                        txtListChildTitle.setText(childText);
+                        txtListChildTitle.setPaintFlags(txtListChildTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         break;
                     case 1:
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_text, null);
+                        txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemPackagesHeader);
+                        txtListChild = (TextView)convertView.findViewById(R.id.lbListItemPackagesItem);
+                        if (txtListChildTitle == null || txtListChild == null)
+                            break;
                         txtListChildTitle.setText(R.string.orgAdr);
+                        txtListChild.setText(childText);
                         break;
                     case 2:
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_text, null);
+                        txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemPackagesHeader);
+                        txtListChild = (TextView)convertView.findViewById(R.id.lbListItemPackagesItem);
+                        if (txtListChildTitle == null || txtListChild == null)
+                            break;
+                        txtListChild.setText(childText);
                         txtListChildTitle.setText(R.string.country);
                         break;
                     case 3:
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_text, null);
+                        txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemPackagesHeader);
+                        txtListChild = (TextView)convertView.findViewById(R.id.lbListItemPackagesItem);
+                        if (txtListChildTitle == null || txtListChild == null)
+                            break;
+                        txtListChild.setText(childText);
                         txtListChildTitle.setText(R.string.role);
                         break;
                 }break;
@@ -139,15 +202,35 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 Pos = childPosition % 3;
                 switch (Pos) {
                     case 0:
-                        txtListChildTitle.setText(R.string.packageType);
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_title, null);
+                        txtListChildTitle = convertView.findViewById(R.id.lbListItemPackagesTitle);
+                        if (txtListChildTitle == null)
+                            break;
+                        txtListChildTitle.setText(childText);
+                        txtListChildTitle.setPaintFlags(txtListChildTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         break;
                     case 1:
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_text, null);
+                        txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemPackagesHeader);
+                        txtListChild = (TextView)convertView.findViewById(R.id.lbListItemPackagesItem);
+                        if (txtListChildTitle == null || txtListChild == null)
+                            break;
                         txtListChildTitle.setText(R.string.lifespan);
+                        txtListChild.setText(childText);
                         break;
                     case 2:
+                        inflater = (LayoutInflater)this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        convertView = inflater.inflate(R.layout.list_item_multiple_text, null);
+                        txtListChildTitle = (TextView)convertView.findViewById(R.id.lbListItemPackagesHeader);
+                        txtListChild = (TextView)convertView.findViewById(R.id.lbListItemPackagesItem);
+                        if (txtListChildTitle == null || txtListChild == null)
+                            break;
+                        txtListChild.setText(childText);
                         txtListChildTitle.setText(R.string.storageInfo);
                         break;
-                }break;
+                }  break;
         }
 
         return convertView;
@@ -157,5 +240,61 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    void getPackageMap()
+    {
+        packTitles = new ArrayList<>();
+        List<String> listChild = new ArrayList<>();
+        listChild = ((MainActivity)context).getPackages();
+        HashMap<String, List<String>> Hash = new HashMap<>();
+        int pos;
+        int listPos = 0;
+        for (int i = 0; i < listChild.size() / 3; i++)
+        {
+            pos = i * 3;
+            String pack = "Förpackning ";
+            pack = pack + (i+1) + ":";
+            List<String> entry = new ArrayList<>();
+            for (int k = 0; k < 3; k++)
+            {
+                entry.add(listChild.get(pos + k));
+            }
+            packTitles.add(pack);
+            packagesMap.put(pack, entry);
+            listPos++;
+        }
+
+        int amount = packTitles.size();
+        listHashMap.remove("Förpackning");
+        listHashMap.put("Förpackning", packTitles);
+    }
+
+    void getOrganizationsMap()
+    {
+        List<String> listChild = new ArrayList<>();
+        listChild = ((MainActivity)context).getOrganizations();
+        HashMap<String, List<String>> Hash = new HashMap<>();
+        int pos;
+        int listPos = 0;
+        for (int i = 0; i < listChild.size() / 3; i++)
+        {
+            pos = i * 3;
+            String pack = "Företag ";
+            pack = pack + (i+1) + ":";
+            List<String> entry = new ArrayList<>();
+            for (int k = 0; k < 3; k++)
+            {
+                entry.add(listChild.get(pos + k));
+            }
+            organizationsMap.put(pack, entry);
+            listPos++;
+        }
+    }
+
+    private void Search (String input)
+    {
+        ((MainActivity)context).SubstanceSearch(input);
+
     }
 }
