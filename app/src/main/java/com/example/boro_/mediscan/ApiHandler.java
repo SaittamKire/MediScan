@@ -2,6 +2,9 @@ package com.example.boro_.mediscan;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,8 +22,7 @@ public class ApiHandler {
 
     MainActivity mainActivity;
 
-    ApiHandler( MainActivity activity)
-    {
+    ApiHandler(MainActivity activity){
         mainActivity = activity;
     }
 
@@ -35,9 +37,8 @@ public class ApiHandler {
                     public void onResponse(String response) {
                         try {
                             JSONArray reader = new JSONArray(response); //OBSERVERA MULTIPLE RESULTS ON SEARCH
-                            JSONObject obj = reader.getJSONObject(0);
-                            String InternalID = obj.getString("InternalID");
-                            SecondSearch(InternalID,language,context);
+                            mainActivity.ShowProductsDialog(reader);
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -53,6 +54,7 @@ public class ApiHandler {
 
         queue.add(stringRequest);
     }
+
     public void FirstSearch(String name, String strength, final String language, final Context context) {
 
         RequestQueue queue = Volley.newRequestQueue(context);

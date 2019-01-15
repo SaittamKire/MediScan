@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
@@ -31,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -143,6 +145,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void ShowProductsDialog(JSONArray reader){
+
+        final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
+        dialog.CreateList(reader, this);
+        dialog.show(getSupportFragmentManager(), "SelectDrugs");
+
+        dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
+            @Override
+            public void onClose() {
+                mApiHandler.SecondSearch(dialog.getInternalID(),SearchLanguage,getApplicationContext());
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
