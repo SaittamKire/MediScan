@@ -26,15 +26,15 @@
     //Organizations
 
     <string name="orgName"><u>Organization Name:</u></string>
-    <string name="orgAdr"><u>Address:</u></string>
-    <string name="country"><u>Country:</u></string>
-    <string name="role"><u>Role:</u></string>
+    <string name="orgAdr">Address:</string>
+    <string name="country">Country:</string>
+    <string name="role">Role:</string>
 
     //Packageinfo
 
     <string name="packageType"><u>Type:</u></string>
-    <string name="lifespan"><u>Lifespan:</u></string>
-    <string name="storageInfo"><u>Storage Information:</u></string>
+    <string name="lifespan">Lifespan:</string>
+    <string name="storageInfo">Storage Information:</string>
 
 
     //Wakeup Dialog Strings
