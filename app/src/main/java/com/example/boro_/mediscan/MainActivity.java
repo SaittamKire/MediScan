@@ -1,5 +1,6 @@
 package com.example.boro_.mediscan;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -66,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mApiHandler = new ApiHandler();
+        SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
+
+
         SetupLanguage();
-
         initData();
-
 
 
         bottomNavigationView = (BottomNavigationView)
@@ -121,14 +123,15 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.frame_layout, Scan.newInstance());
         transaction.commit();
 
+        if (prefs.getBoolean("bool", true)) {
+            //Dialog logic
+            cdd.show(); //Shows it
+            cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+            cdd.setCancelable(false);
+            //End dialog logic
+        }
 
-        //Dialog logic (NEEDS TO BE UPDATED TO LOOK UP IF THE USER HAS ACCEPTED THIS MESSAGE ALREADY)
-        cdd.show(); //Shows it
-        cdd.setCanceledOnTouchOutside(false); //Disables cancelations
-        cdd.setCancelable(false);
-        //End dialog logic
-
-        setupButtons(); //Will setup topbar buttons and searchfield
+        setupButtons(prefs); //Will setup topbar buttons and searchfield
 
     }
 
@@ -375,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupButtons() {
+    private void setupButtons(SharedPreferences prefs) {
 
         /*Search bar Logic*/
         final EditText SearchBar = (EditText) findViewById(R.id.search_bar);
@@ -410,6 +413,18 @@ public class MainActivity extends AppCompatActivity {
                 cdd.setCancelable(false);
             }
         });
+
+        if (prefs.getBoolean("bool", true)) {
+            cdd.yes.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    SharedPreferences.Editor editor = getSharedPreferences("disclaimer", MODE_PRIVATE).edit();
+                    editor.putBoolean("bool", false);
+                    editor.apply();
+
+                    cdd.dismiss();
+                }
+            });
+        }
     }
 
 

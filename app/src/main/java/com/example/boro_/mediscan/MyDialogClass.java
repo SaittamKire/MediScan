@@ -2,11 +2,14 @@ package com.example.boro_.mediscan;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class MyDialogClass extends Dialog implements
         android.view.View.OnClickListener {
