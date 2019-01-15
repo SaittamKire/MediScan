@@ -3,7 +3,10 @@ package com.example.boro_.mediscan;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
@@ -898,15 +901,26 @@ public class    Scan extends Fragment {
             //Item item = new Item(drugs, getContext().getApplicationContext());
 
             //((MainActivity)getActivity()).CreateItem(drugs);
-            SecondSearch(drugs);
+
+
+
+
+
+
+
+
+
+            //SecondSearch(drugs);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void SecondSearch(JSONObject object){
 
-        String InternalID = object.optString("InternalID");
+
+    public void SecondSearch(String InternalID){
+
+        //String InternalID = object.optString("InternalID");
 
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url ="http://213.66.251.184/Bottles/BottlesService.asmx/SecondSearch?id="+InternalID+"&language_sv_en=sv";
@@ -945,6 +959,14 @@ public class    Scan extends Fragment {
 
     }
 
+
+
+    public void onClick(SelectDrugDialogFragment dialog, int which){
+
+    }
+
+
+
     public void getImageStrings(FirebaseVisionDocumentText result){
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final CloudLabelManipulator Apistr = new CloudLabelManipulator(result); // Creates a cloudlabelmanipulator object out of the result from the firebasedocumenttext object we made earlier. we use functions in this class to find relevant text
@@ -961,7 +983,25 @@ public class    Scan extends Fragment {
                         }
                         try {
                             JSONArray reader = new JSONArray(response); // Makes a reader of the response we got from the API
-                            DisplayDrug(Apistr.getDrug(reader)); //Uses the function inside apistr to get the drugs out of it.
+
+
+                            final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
+                            dialog.CreateList(reader, getActivity());
+                            dialog.show(getFragmentManager(), "SelectDrugs");
+
+
+
+                            dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
+                                @Override
+                                public void onClose() {
+                                    SecondSearch(dialog.getInternalID());
+
+                                }
+                            });
+
+
+
+                            //DisplayDrug(Apistr.getDrug(reader)); //Uses the function inside apistr to get the drugs out of it.
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
