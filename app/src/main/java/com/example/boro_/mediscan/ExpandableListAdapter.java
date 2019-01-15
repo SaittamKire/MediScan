@@ -242,55 +242,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    void getPackageMap()
-    {
-        packTitles = new ArrayList<>();
-        List<String> listChild = new ArrayList<>();
-        listChild = ((MainActivity)context).getPackages();
-        HashMap<String, List<String>> Hash = new HashMap<>();
-        int pos;
-        int listPos = 0;
-        for (int i = 0; i < listChild.size() / 3; i++)
-        {
-            pos = i * 3;
-            String pack = "Förpackning ";
-            pack = pack + (i+1) + ":";
-            List<String> entry = new ArrayList<>();
-            for (int k = 0; k < 3; k++)
-            {
-                entry.add(listChild.get(pos + k));
-            }
-            packTitles.add(pack);
-            packagesMap.put(pack, entry);
-            listPos++;
-        }
-
-        int amount = packTitles.size();
-        listHashMap.remove("Förpackning");
-        listHashMap.put("Förpackning", packTitles);
-    }
-
-    void getOrganizationsMap()
-    {
-        List<String> listChild = new ArrayList<>();
-        listChild = ((MainActivity)context).getOrganizations();
-        HashMap<String, List<String>> Hash = new HashMap<>();
-        int pos;
-        int listPos = 0;
-        for (int i = 0; i < listChild.size() / 3; i++)
-        {
-            pos = i * 3;
-            String pack = "Företag ";
-            pack = pack + (i+1) + ":";
-            List<String> entry = new ArrayList<>();
-            for (int k = 0; k < 3; k++)
-            {
-                entry.add(listChild.get(pos + k));
-            }
-            organizationsMap.put(pack, entry);
-            listPos++;
-        }
-    }
+   
 
     private void Search (String input)
     {
