@@ -1,5 +1,6 @@
 package com.example.boro_.mediscan;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mApiHandler = new ApiHandler();
+
         SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
 
@@ -397,6 +400,8 @@ public class MainActivity extends AppCompatActivity {
                                 // the user is done typing.
                                 SearchValue = SearchBar.getText().toString();
                                 ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
+                                hideSoftKeyboard(SearchBar);
+                                SearchBar.setText("");
                                 return true; // consume.
                             }
                         }
@@ -427,6 +432,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void hideSoftKeyboard(View view){
+        InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     public void ApiFirstSearchNoStrengthCallback(String name) { //Need callback to get Context.
         mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this);
