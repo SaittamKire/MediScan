@@ -2,6 +2,7 @@ package com.example.boro_.mediscan;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -159,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+
             return true;
         }
 
@@ -386,6 +390,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void hideSoftKeyboard(View view){
+        InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void setupButtons(SharedPreferences prefs) {
 
         /*Search bar Logic*/
@@ -405,6 +414,8 @@ public class MainActivity extends AppCompatActivity {
                                 // the user is done typing.
                                 SearchValue = SearchBar.getText().toString();
                                 ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
+                                hideSoftKeyboard(SearchBar);
+                                SearchBar.setText("");
                                 return true; // consume.
                             }
                         }
