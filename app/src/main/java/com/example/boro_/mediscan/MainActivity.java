@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mApiHandler = new ApiHandler();
+        mApiHandler = new ApiHandler(this);
+
         SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
 
@@ -390,11 +391,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void hideSoftKeyboard(View view){
-        InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
     private void setupButtons(SharedPreferences prefs) {
 
         /*Search bar Logic*/
@@ -446,6 +442,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void hideSoftKeyboard(View view){
+        InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     public void ApiFirstSearchNoStrengthCallback(String name) { //Need callback to get Context.
         mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this);
