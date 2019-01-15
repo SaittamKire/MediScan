@@ -28,11 +28,11 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="100" />
-                            <entry key="outputName" value="ic_touch_app_black" />
+                            <entry key="height" value="48" />
+                            <entry key="outputName" value="ic_touch_app_black_48dp" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Jocke" />
-                            <entry key="width" value="100" />
+                            <entry key="sourceFile" value="C:\Users\mclar" />
+                            <entry key="width" value="48" />
                           </map>
                         </option>
                       </PersistentState>
