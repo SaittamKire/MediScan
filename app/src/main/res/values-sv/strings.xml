@@ -41,6 +41,6 @@
 
     //Camera related
     <string name="no_text_found">Ingen text hittad. Var vänlig försök igen.</string>
-    <string name="no_product_match">Kunde inte hitta en matchande produkt.</string>
+    <string name="no_product_match">Kunde inte hitta matchande produkt med namn:</string>
 
 </resources>

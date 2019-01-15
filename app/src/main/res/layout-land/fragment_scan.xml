@@ -11,15 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.example.boro_.mediscan.ScanningView
-        android:id="@+id/scanView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:animation_orientation="vertical"
-        app:animation_speed="500"
-        app:scanbar_opacity="120"
-        app:scanbar_thickness="250"
-        app:scanbar_color="@color/colorPrimary"/>
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -28,12 +20,34 @@
         android:layout_alignParentBottom="true">
 
 
-        <ProgressBar
+        <ImageView
+            android:id="@+id/touchInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_touch_app_black_48dp"
+            />
+
+        <com.example.boro_.mediscan.ScanningView
+            android:id="@+id/scanView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:animation_orientation="vertical"
+            app:scan_animation_duration="400"
+            app:scanbar_opacity="120"
+            app:scanbar_thickness="250"
+            app:scanbar_color="@color/colorPrimary"
+            app:touchIconColor="@color/colorPrimary"
+            app:touchIconAnimationDuration="4000"/>
+
+
+
+<!--        <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"/>-->
 
   <!--      <ImageButton
             android:id="@+id/cameraSnap"

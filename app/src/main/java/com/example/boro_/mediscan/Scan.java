@@ -183,12 +183,16 @@ public class    Scan extends Fragment {
         public void onClick(View v) {
 
             //Begin the photo capture process
-            scanView.startScanAnimation(new ScanningView.onScanEndCallback() {
+            //scanView.startScanAnimation();
+            focusLock();
+
+
+/*            scanView.startScanAnimation(new ScanningView.onScanEndCallback() {
                 @Override
                 public void onScanComplete() {
-                    focusLock();
+
                 }
-            });
+            });*/
 
         }
     };
@@ -951,7 +955,7 @@ public class    Scan extends Fragment {
                     public void onResponse(String response) {
                         if (response.equals("[]")){  // The API we have sends this if there is nothing to fetch so this is the same as 404
                             //Toast.makeText(getContext(), "Could not find matching product", Toast.LENGTH_SHORT).show(); //TODO Better Error Handling please.
-                            showToast(getString(R.string.no_product_match));
+                            showToast(getString(R.string.no_product_match) + " " + Apistr.getFirstStr());
                             enableSnapShot();
                             return;
                         }
@@ -994,8 +998,8 @@ public class    Scan extends Fragment {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                progressBar.setVisibility(View.VISIBLE);
+                scanView.startScanAnimation();
+                //progressBar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -1010,10 +1014,11 @@ public class    Scan extends Fragment {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                progressBar.setVisibility(View.GONE);
+                //progressBar.setVisibility(View.GONE);
             }
         });
 
+        scanView.endAnimation();
         restartPreview();
         //snapShotButton.setEnabled(true);
         cameraView.setOnClickListener(onSnapshotClick);
@@ -1023,8 +1028,6 @@ public class    Scan extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this.getContext());
-
-
     }
 
     @Override
@@ -1044,11 +1047,12 @@ public class    Scan extends Fragment {
 
         //snapShotButton = view.findViewById(R.id.cameraSnap);
        // snapShotButton.setOnClickListener(onSnapshotClick);
-        progressBar = view.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
+        //progressBar = view.findViewById(R.id.progressBar);
+        //progressBar.setVisibility(View.GONE);
         cameraView = view.findViewById(R.id.previewWindow);
         cameraView.setOnClickListener(onSnapshotClick);
         scanView = view.findViewById(R.id.scanView);
+
     }
 
     @Override
