@@ -209,8 +209,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         txtListChild = (TextView)convertView.findViewById(R.id.lbListItemPackagesItem);
                         if (txtListChildTitle == null || txtListChild == null)
                             break;
-                        txtListChild.setText(childText);
                         txtListChildTitle.setText(R.string.storageInfo);
+                        txtListChild.setText(childText);
                         break;
                 }  break;
         }
