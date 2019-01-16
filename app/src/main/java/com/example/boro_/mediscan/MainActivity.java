@@ -191,6 +191,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void CreateItem(JSONObject object){
 
+        String saftycheck = object.optString("Products");
+        String net = "[]";
+        if (saftycheck.equals(net)){
+            Toast.makeText(this, R.string.Product_Error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         item = new Item(object);
 
         initData2(item);

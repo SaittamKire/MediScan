@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -35,7 +36,7 @@ public class SelectDrugDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Select drug")
+        builder.setTitle(getResources().getString(R.string.dialog_Select_Drug))
                 .setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -45,27 +46,10 @@ public class SelectDrugDialogFragment extends DialogFragment {
                         SelectedInternalID = InternalID.get(which).toString();
 
                         //här ska vi kolla vilken som klickades samt sedan returna dess internal id
-                        Toast.makeText(getActivity(), "Drug "+SelectedInternalID+" clicked",
+                        Toast.makeText(getActivity(), getResources().getString(R.string.dialog_Drug_Clicked_1) + " " + SelectedInternalID + " " + getResources().getString(R.string.dialog_Drug_Clicked_2),
                                 Toast.LENGTH_LONG).show();
 
-
-
-
-
                         close1.onClose();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -114,7 +98,7 @@ public class SelectDrugDialogFragment extends DialogFragment {
 
         ArrayAdapter adapter = new ArrayAdapter<String>(
                 context,
-                android.R.layout.simple_list_item_single_choice,
+                R.layout.custom_list_layout_item,
                 list
         );
 

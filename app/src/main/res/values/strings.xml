@@ -42,9 +42,16 @@
     <string name="dialog_text">The user is responsible for their own decisions made by the presented data. Make sure that the correct medicine is presented on screen after a search has been made. The creators of this application is not responsible for injury or death.</string>
     <string name="dialog_text_disclaimer"> By clicking \"YES\" you accept these conditions</string>
     <string name="dialog_text_ok">Yes</string>
+    <string name="dialog_Select_Drug">Select your preferred drug</string>
+    <string name="dialog_Drug_Clicked_1">Drug: </string>
+    <string name="dialog_Drug_Clicked_2"> Clicked</string>
+
 
     //Camera related
     <string name="no_text_found">Unable to detect text, please try again.</string>
     <string name="no_product_match">Could not find a suitable product named:</string>
+
+    //Error texts
+    <string name="Product_Error">This element is corrupted from the database. Item has been added to fix list.</string>
 
 </resources>

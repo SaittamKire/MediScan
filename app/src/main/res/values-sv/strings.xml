@@ -38,9 +38,15 @@
     <string name="dialog_text">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>
     <string name="dialog_text_disclaimer">Genom att klicka på \"JA \" godkänner du dessa vilkor</string>
     <string name="dialog_text_ok">Ja</string>
+    <string name="dialog_Select_Drug">Klicka på önskat läkemedel</string>
+    <string name="dialog_Drug_Clicked_1">Hämtar: </string>
+    <string name="dialog_Drug_Clicked_2"> från databasen</string>
 
     //Camera related
     <string name="no_text_found">Ingen text hittad. Var vänlig försök igen.</string>
     <string name="no_product_match">Kunde inte hitta matchande produkt med namn:</string>
+
+    //Error texts
+    <string name="Product_Error">Det här elementet är korrupt från databasen. Den har flagats för att updateras.</string>
 
 </resources>
