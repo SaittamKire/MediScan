@@ -61,5 +61,6 @@
 
     //Error texts
     <string name="Product_Error">This element is corrupted from the database. Item has been added to fix list.</string>
+    <string name="Communication_Error">Could not communicate with database. Try again later.</string>
 
 </resources>
