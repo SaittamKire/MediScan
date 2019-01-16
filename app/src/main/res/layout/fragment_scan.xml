@@ -34,12 +34,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:animation_orientation="vertical"
-        app:scan_animation_duration="400"
-        app:scanbar_opacity="220"
-        app:scanbar_thickness="500"
+        app:scan_animation_duration="600"
+        app:scanbar_opacity="150"
+        app:scanbar_thickness="200"
         app:scanbar_color="@color/colorPrimary"
-        app:touchIconAnimationDuration="3000"
-        app:touchIconColor="@color/colorPrimary"/>
+        app:touchIconAnimationDuration="1000"
+        app:touchIconColor="@color/colorAccent"/>
 
 
 

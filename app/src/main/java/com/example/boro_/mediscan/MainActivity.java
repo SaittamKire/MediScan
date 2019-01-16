@@ -179,6 +179,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClose() {
                 mApiHandler.SecondSearch(dialog.getInternalID(),SearchLanguage,getApplicationContext());
             }
+
+            @Override
+            public void onDismiss() {
+
+            }
         });
     }
 

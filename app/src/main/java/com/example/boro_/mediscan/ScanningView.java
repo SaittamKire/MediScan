@@ -41,7 +41,7 @@ public class ScanningView extends View {
     private ImageView iconView;
     private int touchIconColor;
     private int touchIconAnimationDuration;
-
+    private boolean iconShow = true;
 
     public ScanningView(Context context) {
         super(context);
@@ -136,13 +136,29 @@ public class ScanningView extends View {
 
         if(iconView == null) return;
 
-        iconView.setColorFilter(Color.CYAN);
+        iconView.setColorFilter(touchIconColor);
 
-        iconAnimator.setDuration(2000);
-        iconAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        iconAnimator.setDuration(touchIconAnimationDuration);
+        iconAnimator.setRepeatCount(5);
         iconAnimator.setRepeatMode(ValueAnimator.REVERSE);
         iconAnimator.setIntValues(0,255);
         iconAnimator.addUpdateListener(iconAnimatorListener);
+        iconAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+
+                iconShow = false;
+                iconView.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                iconShow = false;
+                iconView.setVisibility(GONE);
+            }
+        });
         iconAnimator.start();
 
     }
@@ -317,8 +333,13 @@ public class ScanningView extends View {
 
         if(valueAnimator.isRunning()){
             valueAnimator.end();
-            iconView.setVisibility(VISIBLE);
-            iconAnimator.start();
+
+            if(iconShow){
+
+                iconView.setVisibility(VISIBLE);
+                iconAnimator.start();
+            }
+
 
         }
 
