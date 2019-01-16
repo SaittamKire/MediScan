@@ -52,6 +52,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.boro_.mediscan.CameraTextRecognition.AutoFitTextureView;
@@ -186,16 +187,8 @@ public class    Scan extends Fragment {
         public void onClick(View v) {
 
             //Begin the photo capture process
-            //scanView.startScanAnimation();
+
             focusLock();
-
-
-/*            scanView.startScanAnimation(new ScanningView.onScanEndCallback() {
-                @Override
-                public void onScanComplete() {
-
-                }
-            });*/
 
         }
     };
@@ -628,10 +621,6 @@ public class    Scan extends Fragment {
 
             currentCameraState = PREVIEW_STATE;
 
-            //TODO What happens after snapshot?
-            //Restart preview temporarily
-            //restartPreview();
-
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -877,9 +866,7 @@ public class    Scan extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
 
-                        //TODO Handle error when no network for example
-
-                        showToast(e.getMessage());
+                        showToast(getString(R.string.textrec_not_available));
                         enableSnapShot();
                     }
                 });
@@ -887,35 +874,6 @@ public class    Scan extends Fragment {
 
         }
     }
-
-    public void DisplayDrug(JSONObject drugs)
-    {
-        try {
-            String drug = drugs.toString(2); //tostring(2) is a formater for the string. //TODO should extract the relevant text and cleanup the object before displaying it. Right now it looks bad
-            //Intent intent = new Intent(this, Main2Activity.class); // Creates and intent to show the info
-            //intent.putExtra(EXTRA_MESSAGE,drug); // put text into
-            //startActivity(intent); // start the activity which contains the drug information.
-            enableSnapShot();
-            //TODO Send json to it's intended page
-            showToast(drug);
-            //Item item = new Item(drugs, getContext().getApplicationContext());
-
-            //((MainActivity)getActivity()).CreateItem(drugs);
-
-
-
-
-
-
-
-
-
-            //SecondSearch(drugs);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 
     public void SecondSearch(String InternalID){
@@ -943,6 +901,7 @@ public class    Scan extends Fragment {
 
 
                         } catch (JSONException e) {
+                            enableSnapShot();
                             e.printStackTrace();
                         }
 
@@ -954,6 +913,7 @@ public class    Scan extends Fragment {
             public void onErrorResponse(VolleyError error) {
                //TODO Handle different volley errors
                 Toast.makeText(getContext(), R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                enableSnapShot();
             }
         });
 
@@ -969,7 +929,6 @@ public class    Scan extends Fragment {
     }
 
 
-
     public void getImageStrings(FirebaseVisionDocumentText result){
         RequestQueue queue = Volley.newRequestQueue(getActivity());
 
@@ -983,7 +942,7 @@ public class    Scan extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals("[]")){  // The API we have sends this if there is nothing to fetch so this is the same as 404
-                            //Toast.makeText(getContext(), "Could not find matching product", Toast.LENGTH_SHORT).show(); //TODO Better Error Handling please.
+
                             showToast(getString(R.string.no_product_match) + " " + Apistr.getFirstStr());
                             enableSnapShot();
                             return;
@@ -998,6 +957,7 @@ public class    Scan extends Fragment {
 
                             final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
                             dialog.CreateList(reader, getActivity());
+                            onProductFound();
                             dialog.show(getFragmentManager(), "SelectDrugs");
 
 
@@ -1008,17 +968,20 @@ public class    Scan extends Fragment {
                                     SecondSearch(dialog.getInternalID());
 
                                 }
+
+                                //If back button is pressed when dialog is up
+                                @Override
+                                public void onDismiss() {
+                                    enableSnapShot();
+                                }
                             });
 
-
-
-                            //DisplayDrug(Apistr.getDrug(reader)); //Uses the function inside apistr to get the drugs out of it.
                         } catch (JSONException e) {
+                            showToast(getString(R.string.Product_Error));
+                            enableSnapShot();
                             e.printStackTrace();
                         }
 
-                        // Display the first 500 characters of the response string.
-                        //
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -1026,7 +989,6 @@ public class    Scan extends Fragment {
 //
                 //TODO Handle different volley errors
                 showToast(error.getMessage());
-                //Toast.makeText(getContext(), "Could not communicate with database. Try again later.", Toast.LENGTH_SHORT).show();
                 enableSnapShot();
             }
         });
@@ -1036,10 +998,25 @@ public class    Scan extends Fragment {
 
     }
 
+    private void onProductFound(){
+
+        Activity activity = getActivity();
+
+        if(activity == null) return;
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scanView.endAnimation();
+
+            }
+        });
+    }
+
     private void waitForSnapshotResult(){
 
         cameraView.setOnClickListener(null);
-        //snapShotButton.setEnabled(false);
+
         stopPreview();
 
         Activity activity = getActivity();
@@ -1050,7 +1027,7 @@ public class    Scan extends Fragment {
             @Override
             public void run() {
                 scanView.startScanAnimation();
-                //progressBar.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -1065,13 +1042,12 @@ public class    Scan extends Fragment {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //progressBar.setVisibility(View.GONE);
+                scanView.endAnimation();
             }
         });
 
-        scanView.endAnimation();
         restartPreview();
-        //snapShotButton.setEnabled(true);
+
         cameraView.setOnClickListener(onSnapshotClick);
     }
 
@@ -1096,10 +1072,6 @@ public class    Scan extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        //snapShotButton = view.findViewById(R.id.cameraSnap);
-       // snapShotButton.setOnClickListener(onSnapshotClick);
-        //progressBar = view.findViewById(R.id.progressBar);
-        //progressBar.setVisibility(View.GONE);
         cameraView = view.findViewById(R.id.previewWindow);
         cameraView.setOnClickListener(onSnapshotClick);
         scanView = view.findViewById(R.id.scanView);

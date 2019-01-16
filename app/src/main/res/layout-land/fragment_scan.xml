@@ -37,8 +37,8 @@
             app:scanbar_opacity="120"
             app:scanbar_thickness="250"
             app:scanbar_color="@color/colorPrimary"
-            app:touchIconColor="@color/colorPrimary"
-            app:touchIconAnimationDuration="4000"/>
+            app:touchIconColor="@color/colorAccent"
+            app:touchIconAnimationDuration="1000"/>
 
 
 
