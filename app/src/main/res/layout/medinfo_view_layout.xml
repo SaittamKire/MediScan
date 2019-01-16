@@ -17,7 +17,8 @@
         android:textColor="@color/colorTabText"
         android:textStyle="bold"
         android:textSize="18dp"
-        android:padding="3dp"/>
+        android:padding="3dp"
+        android:fontFamily="@string/mainFont"/>
 
     <TextView
         android:id="@+id/textViewInfo"
@@ -29,5 +30,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorTabText"
         android:textSize="15dp"
-        android:padding="3dp"/>
+        android:padding="3dp"
+        android:fontFamily="@string/mainFont"/>
 </LinearLayout>

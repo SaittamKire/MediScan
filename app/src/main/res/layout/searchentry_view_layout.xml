@@ -19,5 +19,8 @@
         android:padding="15dp"
         android:layout_weight="100"
         android:clickable="true"
-        android:onClick="PickEntry"/>
+        android:onClick="PickEntry"
+        android:fontFamily="@string/mainFont"/>
+
+
 </LinearLayout>

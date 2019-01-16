@@ -25,10 +25,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     MenuItem tab1;
     MenuItem tab2;
     MenuItem tab3;
+    EditText SearchBar;
     boolean tabCreated = false;
     public ApiHandler mApiHandler;
     public MyDialogClass cdd;
@@ -148,6 +152,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setupButtons(prefs); //Will setup topbar buttons and searchfield
+
+
+        final LinearLayout layout = (LinearLayout) findViewById(R.id.top_Bar);
+        ViewTreeObserver vto = layout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int width  = layout.getMeasuredWidth();
+                width = (int)(width * 0.8);
+                SearchBar.setWidth(width);
+            }
+        });
 
     }
 
@@ -430,7 +447,8 @@ public class MainActivity extends AppCompatActivity {
     private void setupButtons(SharedPreferences prefs) {
 
         /*Search bar Logic*/
-        final EditText SearchBar = (EditText) findViewById(R.id.search_bar);
+        SearchBar = (EditText) findViewById(R.id.search_bar);
+
         SearchBar.setOnEditorActionListener( //Will setup Search bar logic, when user clicks okay a api call will be made!
                 new EditText.OnEditorActionListener() {
                     @Override

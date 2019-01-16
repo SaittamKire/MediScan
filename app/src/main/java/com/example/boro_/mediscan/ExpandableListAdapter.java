@@ -74,7 +74,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 
         TextView lblListHeader = (TextView)convertView.findViewById(R.id.lbListHeader);
-        lblListHeader.setTypeface(null, Typeface.BOLD);
+        Typeface font = lblListHeader.getTypeface();
+        lblListHeader.setTypeface(font, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
         return convertView;
@@ -211,6 +212,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                             break;
                         txtListChildTitle.setText(R.string.storageInfo);
                         txtListChild.setText(childText);
+                        int[] padding = new int[4];
+                        padding[0] = convertView.getPaddingLeft();
+                        padding[1] = convertView.getPaddingTop();
+                        padding[2] = convertView.getPaddingRight();
+                        padding[3] = convertView.getPaddingBottom() + 65;
+
+                        convertView.setPadding(padding[0], padding[1], padding[2], padding[3]);
                         break;
                 }  break;
         }
