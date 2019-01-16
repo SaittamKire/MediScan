@@ -520,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
             List<String> list = new ArrayList<>();
             list = (listHash.get(listDataHeader.get(i)));
 
-            sharedPreferences.putString(listDataHeader.get(i), TextUtils.join(",", list));
+            sharedPreferences.putString(listDataHeader.get(i), TextUtils.join(";", list));
             sharedPreferences.apply();
 
         }
@@ -533,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
             job += k;
             sharedPreferences.putString(job, recentItems.get(k).toString());
         }
-        sharedPreferences.putString("titles", TextUtils.join(",", listDataHeader));
+        sharedPreferences.putString("titles", TextUtils.join(";", listDataHeader));
         sharedPreferences.apply();
     }
 
@@ -563,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
 
             String serialized = preferences.getString("titles", null);
 
-            List<String> list = new ArrayList(Arrays.asList(TextUtils.split(serialized, ",")));
+            List<String> list = new ArrayList(Arrays.asList(TextUtils.split(serialized, ";")));
 
             listDataHeader = new ArrayList<String>(list);
             listHash = new HashMap<>();
@@ -572,7 +572,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < listDataHeader.size(); i++)
             {
                 String serializedList = preferences.getString(listDataHeader.get(i), null);
-                List<String> productList = Arrays.asList(TextUtils.split(serializedList, ","));
+                List<String> productList = Arrays.asList(TextUtils.split(serializedList, ";"));
 
                 listHash.put(listDataHeader.get(i), productList);
             }
