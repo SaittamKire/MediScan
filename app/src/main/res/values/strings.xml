@@ -58,6 +58,7 @@
     //Camera related
     <string name="no_text_found">Unable to detect text, please try again.</string>
     <string name="no_product_match">Could not find a suitable product named:</string>
+    <string name="textrec_not_available">Textrecognition is not available at the moment.</string>
 
     //Error texts
     <string name="Product_Error">This element is corrupted from the database. Item has been added to fix list.</string>

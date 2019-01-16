@@ -112,25 +112,30 @@ public class CloudLabelManipulator {
         }
         return Apistr;
     }
-    public JSONObject getDrug (JSONArray Drugs){ //Takes in a JSONarray and fetches the one that matches the variation name for the object we have. it there is no variation name EX "Alvedon" then it will return the first object in the list.
+    public JSONArray getDrug (JSONArray Drugs){ //Takes in a JSONarray and fetches the one that matches the variation name for the object we have. it there is no variation name EX "Alvedon" then it will return the first object in the list.
+
+        JSONArray arrayMatched = new JSONArray();
+        int j = 0;
         String Match = getFirstStr() + " " + getSecondStr(getFirstStr());
         for (int i=0;i < Drugs.length(); i++)
         {
             try {
                 if(Drugs.getJSONObject(i).getString("LegalName").equals(Match))
                 {
-                    return Drugs.getJSONObject(i); // Returns the found match to display it
+                    arrayMatched.put(j,Drugs.getJSONObject(i));
+                    j++;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        try {
-            return Drugs.getJSONObject(0); // TODO Could return the entire Array list which would be nice. We could work with that
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(arrayMatched.length() > 0){
+            return arrayMatched;
         }
-        return null;
+        else {
+            return Drugs;
+        }
+
     }
     public void SimpleIPrequest(String ProductName, String Dosage, String Variant, Context still){ //TODO i dont think we need to send the strings here if can fetch internal see above
         RequestQueue queue = Volley.newRequestQueue(still); // TODO change everything so it can return something right now it cant return anything that and thats a problem.
