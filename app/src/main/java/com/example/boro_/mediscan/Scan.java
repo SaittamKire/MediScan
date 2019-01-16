@@ -922,8 +922,11 @@ public class    Scan extends Fragment {
 
         //String InternalID = object.optString("InternalID");
 
+        String searchlang = ((MainActivity)getActivity()).SearchLanguage;
+        if (searchlang.equals("")){searchlang = "en";}
+
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url ="http://213.66.251.184/Bottles/BottlesService.asmx/SecondSearch?id="+InternalID+"&language_sv_en=sv";
+        String url ="http://213.66.251.184/Bottles/BottlesService.asmx/SecondSearch?id="+InternalID+"&language_sv_en="+searchlang;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -969,8 +972,12 @@ public class    Scan extends Fragment {
 
     public void getImageStrings(FirebaseVisionDocumentText result){
         RequestQueue queue = Volley.newRequestQueue(getActivity());
+
+        String searchlang = ((MainActivity)getActivity()).SearchLanguage;
+        if (searchlang.equals("")){searchlang = "en";}
+
         final CloudLabelManipulator Apistr = new CloudLabelManipulator(result); // Creates a cloudlabelmanipulator object out of the result from the firebasedocumenttext object we made earlier. we use functions in this class to find relevant text
-        String url="http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+Apistr.getFirstStr()+"&strength="+Apistr.getDosage()+"&language=sv&fbclid=IwAR00DSzecqYioxMBf3h53q42YNhFrjCbpfjE1BWDGsPg3yZkCqQqg3nxWko";
+        String url="http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+Apistr.getFirstStr()+"&strength="+Apistr.getDosage()+"&language="+searchlang+"&fbclid=IwAR00DSzecqYioxMBf3h53q42YNhFrjCbpfjE1BWDGsPg3yZkCqQqg3nxWko";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
