@@ -209,6 +209,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (object != null)
         {
+            String title = item.Products.Name;
+            title = title.concat(" ");
+            title = title.concat(item.Products.Strength);
+            title = title.concat(" ");
+            title = title.concat(item.Products.PharmaceuticalForm);
+
+
             for (int i = 0; i < RecentSearchesList.size(); i++)
             {
                 String stringToBeChecked = item.Products.InternalID;
@@ -224,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             }
             recentItems.add(0, object);
             RecentSearchesList.add(0, item);
-            recentSearchListTitle.add(0, item.Products.Name);
+            recentSearchListTitle.add(0, title);
             initializeResultView(RecentSearchesList.get(0));
         }
 
