@@ -9,19 +9,27 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="take_photo">Take a Picture!</string>
     <string name="search">MediScan: Search Here</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+
+    //ListHeader
+
+    <string name="listProduct">Product</string>
+    <string name="listCompositions">Active Substances</string>
+    <string name="listOrganization">Organization info</string>
+    <string name="listPackaging">Packages</string>
 
     //Product
 
     <string name="name"><u>Name:</u></string>
     <string name="presc"><u>Prescription:</u></string>
-    <string name="prodType"><u>Produkt Type:</u></string>
-    <string name="medForm"><u>Medical form:</u></string>
+    <string name="prodType"><u>Product Type:</u></string>
+    <string name="medForm"><u>Pharmaceutical Form:</u></string>
     <string name="strength"><u>Strength:</u></string>
     <string name="narc"><u>Narcotic Classification:</u></string>
     <string name="saleStopped"><u>Sales Stopped:</u></string>
+    <string name="noPrescription">Non-prescription</string>
 
-    //Compounds
-    <string name="compounds"><u>Active Substances:</u></string>
 
     //Organizations
 

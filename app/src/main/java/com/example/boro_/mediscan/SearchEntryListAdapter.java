@@ -1,6 +1,5 @@
 package com.example.boro_.mediscan;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +48,6 @@ public class SearchEntryListAdapter extends ArrayAdapter<SearchEntry> {
 
         public void updateSearchEntry (int number)
         {
-            ((MainActivity)getContext()).changeRetrievedData(number);
+            ((MainActivity)getContext()).switchResultView(number);
         }
 }
