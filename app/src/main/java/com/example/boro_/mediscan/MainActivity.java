@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,13 +33,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     /**
@@ -53,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
-    private ListView mListView;
     BottomNavigationView bottomNavigationView;
     Menu menuNav;
     MenuItem tab1;
@@ -71,29 +74,32 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> recentSearchListTitle = new ArrayList<>();
     HashMap<String, List<String>> listHash;
 
+    List<JSONObject> recentItems = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mApiHandler = new ApiHandler(this);
 
+
         SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
 
 
         SetupLanguage();
-        initData();
 
 
-        bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.bottom_navigation);
-        menuNav=bottomNavigationView.getMenu();
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        menuNav = bottomNavigationView.getMenu();
         tab1 = menuNav.findItem(R.id.recent_search_tab);
         tab2 = menuNav.findItem(R.id.scan_tab);
         tab3 = menuNav.findItem(R.id.retrived_data_tab);
         tab3.setEnabled(tabCreated);
         tab1.setEnabled(tabCreated);
         tab2.setChecked(true);
+
+        initData();
 
         bottomNavigationView.setOnNavigationItemSelectedListener
                 (new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -191,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void CreateItem(JSONObject object){
 
+        Item item = new Item(object);
         String saftycheck = object.optString("Products");
         String net = "[]";
         if (saftycheck.equals(net)){
@@ -200,64 +207,46 @@ public class MainActivity extends AppCompatActivity {
 
         item = new Item(object);
 
-        initData2(item);
-
-        RecentSearchesList.add(0, item);
-        recentSearchListTitle.add(0, item.Products.Name);
+        if (object != null)
+        {
+            for (int i = 0; i < RecentSearchesList.size(); i++)
+            {
+                String stringToBeChecked = item.Products.InternalID;
+                if (stringToBeChecked.equals((String)RecentSearchesList.get(i).Products.InternalID))
+                {
+                    recentItems.remove(i);
+                    recentItems.add(i, object);
+                    RecentSearchesList.remove(i);
+                    RecentSearchesList.add(i, item);
+                    initializeResultView(RecentSearchesList.get(i));
+                    return;
+                }
+            }
+            recentItems.add(0, object);
+            RecentSearchesList.add(0, item);
+            recentSearchListTitle.add(0, item.Products.Name);
+            initializeResultView(RecentSearchesList.get(0));
+        }
 
         return;
-
-
-
     }
 
 
     private void initData() {
-        listDataHeader = new ArrayList<>();
-        listHash = new HashMap<>();
 
+        SharedPreferences preferences = getSharedPreferences("SavedData", Context.MODE_PRIVATE);
 
-        listDataHeader.add("Produkt");
-        listDataHeader.add("Aktiva substanser");
-        listDataHeader.add("Organisationsinfo");
-        listDataHeader.add("Förpackning");
-
-        List <String> Produkt = new ArrayList<>();
-        Produkt.add("Treo");
-        Produkt.add("Receptfritt");
-        Produkt.add("Läkemedel");
-        Produkt.add("500mg/50mg");
-        Produkt.add("Brustablett");
-        Produkt.add("Ej narkotikaklassad");
-        Produkt.add("N");
-
-        List <String> Compounds = new ArrayList<>();
-        Compounds.add("Acetylsalicylsyra\nKoffein");
-
-        List <String> OrgInfo = new ArrayList<>();
-        OrgInfo.add("Treo AB");
-        OrgInfo.add("Treogatan 33");
-        OrgInfo.add("Treolian Empire");
-        OrgInfo.add("Innehavare av godkännande för försäljning");
-
-        List <String> Package = new ArrayList<>();
-        Package.add("Rör, 10 brustabletter");
-        Package.add("2 år");
-        Package.add("Ingen särskild temperaturbegränsning");
-
-        listHash.put(listDataHeader.get(0), Produkt);
-        listHash.put(listDataHeader.get(1), Compounds);
-        listHash.put(listDataHeader.get(2), OrgInfo);
-        listHash.put(listDataHeader.get(3), Package);
-
-
+        if(Load(preferences))
+        {
+            tab1.setEnabled(true);
+        }
     }
 
-    public void changeRetrievedData(int i)
+    public void switchResultView(int i)
     {
         if (RecentSearchesList.get(i) != null)
         {
-            initData2(RecentSearchesList.get(i));
+            initializeResultView(RecentSearchesList.get(i));
             Item item = RecentSearchesList.get(i);
             String title = recentSearchListTitle.get(i);
             recentSearchListTitle.remove(i);
@@ -267,54 +256,79 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void initData2(Item item) {
+    public void initializeResultView(Item item) {
         listDataHeader = new ArrayList<>();
         listHash = new HashMap<>();
 
 
-        listDataHeader.add("Produkt");
-        listDataHeader.add("Aktiva substanser");
-        listDataHeader.add("Organisationsinfo");
-        listDataHeader.add("Förpackning");
+        listDataHeader.add(getResources().getString(R.string.listProduct));
+        listDataHeader.add(getResources().getString(R.string.listCompositions));
+        listDataHeader.add(getResources().getString(R.string.listOrganization));
+        listDataHeader.add(getResources().getString(R.string.listPackaging));
 
-        List <String> Produkt = new ArrayList<>();
+        List <String> Product = new ArrayList<>();
 
-        //Produkt.add(item.Products.InternalID);
-        Produkt.add(item.Products.Name);
-        //Produkt.add(item.Products.LegalName);
-        //Produkt.add(item.Products.DateApproved);
+
+        Product.add(item.Products.Name);
         if (item.Products.Prescription.equals(""))
         {
-            Produkt.add("Icke Receptbelagd");
+            String input = getResources().getString(R.string.noPrescription);
+            Product.add(input);
         }
         else
         {
-            Produkt.add(item.Products.Prescription);
+            Product.add(item.Products.Prescription);
         }
 
-        Produkt.add(item.Products.PharmaceuticalForm);
+        Product.add(item.Products.PharmaceuticalForm);
+        Product.add(item.Products.Strength);
+        Product.add(item.Products.NarcoticClassification);
+        if (item.Products.SalesStopped.equals("N"))
+        {
+            String input = getResources().getString(R.string.No);
+            Product.add(input);
+        }
+        else if (item.Products.SalesStopped.equals("Y"))
+        {
+            String input = getResources().getString(R.string.Yes);
+            Product.add(input);
+        }
+        else
+        {
+            Product.add(item.Products.SalesStopped);
+        }
+        //Produkt.add(item.Products.InternalID);
+        //Produkt.add(item.Products.LegalName);
+        //Produkt.add(item.Products.DateApproved);
         //Produkt.add(item.Products.ProductClassification);
-        Produkt.add(item.Products.Strength);
         //Produkt.add(item.Products.StrengthGroupNumber);
         //Produkt.add(item.Products.ApprovalNumber);
         //Produkt.add(item.Products.ClassificationAtcCode);
         //Produkt.add(item.Products.ControledMedicinalProduct);
-        Produkt.add(item.Products.NarcoticClassification);
-        Produkt.add(item.Products.SalesStopped);
         //Produkt.add(item.Products.InterchangeabilityStartdate);
         //Produkt.add(item.Products.PharmaceuticalProductID);
         //Produkt.add(item.Products.ComprefName);
         //Produkt.add(item.Products.AuthorizationProcedure);
 
-        List <String> Compounds = new ArrayList<>();
-        Compounds.add(0, "Title");
+        List <String> Compositions = new ArrayList<>();
 
         for (int j = 0; j < item.Compositions.size(); j++)
         {
-            String compound = item.Compositions.get(j).RecommendedNameSV;
-            String compoundUpperCase = compound.substring(0, 1).toUpperCase() + compound.substring(1);
-
-            Compounds.add(compoundUpperCase);
+            if (SearchLanguage == "sv") {
+                String compound = item.Compositions.get(j).RecommendedNameSV;
+                String compoundUpperCase = compound.substring(0, 1).toUpperCase() + compound.substring(1);
+                Compositions.add(compoundUpperCase);
+            }
+            else if (SearchLanguage == "en") {
+                String compound = item.Compositions.get(j).RecommendedNameEN;
+                String compoundUpperCase = compound.substring(0, 1).toUpperCase() + compound.substring(1);
+                Compositions.add(compoundUpperCase);
+            }
+            else {
+                String compound = item.Compositions.get(j).RecommendedNameEN;
+                String compoundUpperCase = compound.substring(0, 1).toUpperCase() + compound.substring(1);
+                Compositions.add(compoundUpperCase);
+            }
         }
 
 
@@ -357,14 +371,8 @@ public class MainActivity extends AppCompatActivity {
             OrgInfo.add(item.Organizations.get(i).OrgRole);
         }
 
-        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr1);
-        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr2);
-        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr3);
-        //OrgInfo.add(item.Organizations.get(0).OrgaddressAddr4);
-        //OrgInfo.add(item.Organizations.get(0).Country);
         //OrgInfo.add(item.Organizations.get(0).VatNo);
         //OrgInfo.add(item.Organizations.get(0).OrgUnitName);
-        //OrgInfo.add(item.Organizations.get(0).OrgRole);
 
         List <String> Package = new ArrayList<>();
 
@@ -377,22 +385,15 @@ public class MainActivity extends AppCompatActivity {
             Package.add(shelflife);
             Package.add(item.Packages.get(k).StorageDescription);
         }
-        //Package.add(item.Packages.get(0).Text);
         //Package.add(item.Packages.get(0).Prescription);
         //Package.add(item.Packages.get(0).Safety_Features);
         //Package.add(item.Packages.get(0).ConditionID);
         //Package.add(item.Packages.get(0).PharmaceuticalProductID);
-        //String shelflife = item.Packages.get(0).ShelflifeValue;
-        //shelflife = shelflife.concat(" ");
-        //shelflife = shelflife.concat(item.Packages.get(0).UnitName);
-        //Package.add(shelflife);
-        //Package.add(item.Packages.get(0).ShelflifeValue);
         //Package.add(item.Packages.get(0).UnitName);
-        //Package.add(item.Packages.get(0).StorageDescription);
         //Package.add(item.Packages.get(0).PackCondition);
 
-        listHash.put(listDataHeader.get(0), Produkt);
-        listHash.put(listDataHeader.get(1), Compounds);
+        listHash.put(listDataHeader.get(0), Product);
+        listHash.put(listDataHeader.get(1), Compositions);
         listHash.put(listDataHeader.get(2), OrgInfo);
         listHash.put(listDataHeader.get(3), Package);
 
@@ -402,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
         tabCreated = true;
         ManageRecentSearches();
         bottomNavigationView.setSelectedItemId(R.id.retrived_data_tab);
+        Save();
     }
 
     void ManageRecentSearches()
@@ -498,6 +500,79 @@ public class MainActivity extends AppCompatActivity {
         search = search.concat(input);
         Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(search));
         startActivity(browsIntent);
+    }
+
+    void Save()
+    {
+        SharedPreferences.Editor sharedPreferences = this.getSharedPreferences("SavedData", Context.MODE_PRIVATE).edit();
+
+
+        for (int i = 0; i < listDataHeader.size(); i++)
+        {
+            Set<String> target = new HashSet<String>();
+            List<String> list = new ArrayList<>();
+            list = (listHash.get(listDataHeader.get(i)));
+
+            sharedPreferences.putString(listDataHeader.get(i), TextUtils.join(",", list));
+            sharedPreferences.apply();
+
+        }
+
+        int jsonAmount = recentItems.size();
+        sharedPreferences.putInt("savedSize", jsonAmount);
+        for (int k = 0; k < jsonAmount; k++)
+        {
+            String job = "JOb";
+            job += k;
+            sharedPreferences.putString(job, recentItems.get(k).toString());
+        }
+        sharedPreferences.putString("titles", TextUtils.join(",", listDataHeader));
+        sharedPreferences.apply();
+    }
+
+    private boolean Load(SharedPreferences preferences)
+    {
+
+        int amount = preferences.getInt("savedSize", 0);
+        if (amount != 0) {
+            recentItems = new ArrayList<>();
+            recentSearchListTitle.clear();
+            RecentSearchesList = new ArrayList<>();
+
+            for (int j = 0; j < amount; j++) {
+                String job = "JOb";
+                job += j;
+                String strJson = preferences.getString(job, null);
+                if (strJson != null)
+                    try {
+                        JSONObject response = new JSONObject(strJson);
+                        CreateItem(response);
+
+                    } catch (JSONException e) {
+
+                    }
+
+            }
+
+            String serialized = preferences.getString("titles", null);
+
+            List<String> list = new ArrayList(Arrays.asList(TextUtils.split(serialized, ",")));
+
+            listDataHeader = new ArrayList<String>(list);
+            listHash = new HashMap<>();
+
+
+            for (int i = 0; i < listDataHeader.size(); i++)
+            {
+                String serializedList = preferences.getString(listDataHeader.get(i), null);
+                List<String> productList = Arrays.asList(TextUtils.split(serializedList, ","));
+
+                listHash.put(listDataHeader.get(i), productList);
+            }
+            return true;
+        }
+        return false;
+
     }
 
 }

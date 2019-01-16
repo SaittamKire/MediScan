@@ -8,7 +8,14 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="take_photo">Ta ett Kort!</string>
     <string name="search">MediScan: Sök Här</string>
+    <string name="Yes">Ja</string>
+    <string name="No">Nej</string>
 
+
+    <string name="listProduct">Produkt</string>
+    <string name="listCompositions">Aktiva substanser</string>
+    <string name="listOrganization">Organisationsinfo</string>
+    <string name="listPackaging">Förpackningar</string>
 
     //Product
     <string name="name"><u>Namn:</u></string>
@@ -18,9 +25,8 @@
     <string name="strength"><u>Styrka:</u></string>
     <string name="narc"><u>Narkotikaklassad:</u></string>
     <string name="saleStopped"><u>Försäljningsstopp:</u></string>
+    <string name="noPrescription">Ej Receptbelagd</string>
 
-    //Compounds
-    <string name="compounds"><u>Aktiva substanser:</u></string>
 
     //Organizations
     <string name="orgName"><u>Organisationsnamn:</u></string>
