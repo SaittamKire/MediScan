@@ -24,14 +24,14 @@
 
     //Organizations
     <string name="orgName"><u>Organisationsnamn:</u></string>
-    <string name="orgAdr"><u>Address:</u></string>
-    <string name="country"><u>Land:</u></string>
-    <string name="role"><u>Roll:</u></string>
+    <string name="orgAdr">Address:</string>
+    <string name="country">Land:</string>
+    <string name="role">Roll:</string>
 
     //Packageinfo
     <string name="packageType"><u>Typ:</u></string>
-    <string name="lifespan"><u>Hållbarhet:</u></string>
-    <string name="storageInfo"><u>Förvaringsinformation:</u></string>
+    <string name="lifespan">Hållbarhet:</string>
+    <string name="storageInfo">Förvaringsinformation:</string>
 
 
     //Wakeup Dialog Strings

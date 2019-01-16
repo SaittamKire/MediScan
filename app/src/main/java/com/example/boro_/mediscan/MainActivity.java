@@ -1,9 +1,17 @@
 package com.example.boro_.mediscan;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
@@ -17,12 +25,14 @@ import android.view.MenuItem;
 
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -65,12 +75,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mApiHandler = new ApiHandler();
+        mApiHandler = new ApiHandler(this);
+
+        SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
+
+
         SetupLanguage();
-
         initData();
-
 
 
         bottomNavigationView = (BottomNavigationView)
@@ -121,17 +133,31 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.frame_layout, Scan.newInstance());
         transaction.commit();
 
+        if (prefs.getBoolean("bool", true)) {
+            //Dialog logic
+            cdd.show(); //Shows it
+            cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+            cdd.setCancelable(false);
+            //End dialog logic
+        }
 
-        //Dialog logic (NEEDS TO BE UPDATED TO LOOK UP IF THE USER HAS ACCEPTED THIS MESSAGE ALREADY)
-        cdd.show(); //Shows it
-        cdd.setCanceledOnTouchOutside(false); //Disables cancelations
-        cdd.setCancelable(false);
-        //End dialog logic
-
-        setupButtons(); //Will setup topbar buttons and searchfield
+        setupButtons(prefs); //Will setup topbar buttons and searchfield
 
     }
 
+    public void ShowProductsDialog(JSONArray reader){
+
+        final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
+        dialog.CreateList(reader, this);
+        dialog.show(getSupportFragmentManager(), "SelectDrugs");
+
+        dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
+            @Override
+            public void onClose() {
+                mApiHandler.SecondSearch(dialog.getInternalID(),SearchLanguage,getApplicationContext());
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
         //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -149,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+
             return true;
         }
 
@@ -270,15 +300,16 @@ public class MainActivity extends AppCompatActivity {
         //Produkt.add(item.Products.AuthorizationProcedure);
 
         List <String> Compounds = new ArrayList<>();
-        String compound = item.Compositions.get(0).RecommendedNameSV;
+        Compounds.add(0, "Title");
 
-        for (int j = 1; j < item.Compositions.size(); j++)
+        for (int j = 0; j < item.Compositions.size(); j++)
         {
-            compound = compound.concat("\n");
-            compound = compound.concat(item.Compositions.get(j).RecommendedNameSV);
+            String compound = item.Compositions.get(j).RecommendedNameSV;
+            String compoundUpperCase = compound.substring(0, 1).toUpperCase() + compound.substring(1);
+
+            Compounds.add(compoundUpperCase);
         }
 
-        Compounds.add(compound);
 
         /*Compounds.add(item.Compositions.get(0).Name);
         Compounds.add(item.Compositions.get(0).NarcoticClass);
@@ -375,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupButtons() {
+    private void setupButtons(SharedPreferences prefs) {
 
         /*Search bar Logic*/
         final EditText SearchBar = (EditText) findViewById(R.id.search_bar);
@@ -394,6 +425,8 @@ public class MainActivity extends AppCompatActivity {
                                 // the user is done typing.
                                 SearchValue = SearchBar.getText().toString();
                                 ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
+                                hideSoftKeyboard(SearchBar);
+                                SearchBar.setText("");
                                 return true; // consume.
                             }
                         }
@@ -410,8 +443,24 @@ public class MainActivity extends AppCompatActivity {
                 cdd.setCancelable(false);
             }
         });
+
+        if (prefs.getBoolean("bool", true)) {
+            cdd.yes.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    SharedPreferences.Editor editor = getSharedPreferences("disclaimer", MODE_PRIVATE).edit();
+                    editor.putBoolean("bool", false);
+                    editor.apply();
+
+                    cdd.dismiss();
+                }
+            });
+        }
     }
 
+    public void hideSoftKeyboard(View view){
+        InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     public void ApiFirstSearchNoStrengthCallback(String name) { //Need callback to get Context.
         mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this);
@@ -434,6 +483,14 @@ public class MainActivity extends AppCompatActivity {
                 SearchLanguage = "en";
             }
         }
+    }
+
+    public void SubstanceSearch (String input)
+    {
+        String search = "https://www.google.com/search?q=";
+        search = search.concat(input);
+        Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(search));
+        startActivity(browsIntent);
     }
 
 }
