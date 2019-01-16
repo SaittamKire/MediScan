@@ -63,7 +63,9 @@ public class SelectDrugDialogFragment extends DialogFragment {
 
     public void CreateList(JSONArray array, Context context){
 
-
+        if (array.isNull(0)){
+            return;
+        }
 
         List list = new ArrayList<String>();
 

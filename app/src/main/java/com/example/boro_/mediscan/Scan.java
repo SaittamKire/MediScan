@@ -931,6 +931,11 @@ public class    Scan extends Fragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject obj = new JSONObject(response);
+                            if(obj == null)
+                            {
+                                return;
+                            }
+
                             ((MainActivity)getActivity()).CreateItem(obj);
 
 
@@ -945,17 +950,12 @@ public class    Scan extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                //TODO Handle different volley errors
-                Toast.makeText(getContext(), "Could not communicate with database. Try again later.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.Communication_Error, Toast.LENGTH_SHORT).show();
             }
         });
 
 // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
-
-
-
-
 
     }
 
@@ -984,6 +984,10 @@ public class    Scan extends Fragment {
                         try {
                             JSONArray reader = new JSONArray(response); // Makes a reader of the response we got from the API
 
+                            if(reader.isNull(0))
+                            {
+                                return;
+                            }
 
                             final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
                             dialog.CreateList(reader, getActivity());
