@@ -69,6 +69,7 @@ import com.google.firebase.ml.vision.document.FirebaseVisionDocumentTextRecogniz
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -948,33 +949,53 @@ public class    Scan extends Fragment {
                             return;
                         }
                         try {
-                            JSONArray reader = new JSONArray(response); // Makes a reader of the response we got from the API
 
-                            if(reader.isNull(0))
-                            {
-                                return;
+                            Object json = new JSONTokener(response).nextValue();
+
+                            //If only one product is returned it is an JSONObject
+                            if (json instanceof JSONObject){
+
+                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+
+                                SecondSearch(id);
+
+                            }
+                            //Else it is an JSONArray
+                            else if (json instanceof JSONArray){
+
+                                JSONArray reader = new JSONArray(response); // Makes a reader of the response we got from the API
+
+                                if(reader.isNull(0))
+                                {
+                                    return;
+                                }
+
+                                else{
+
+                                    final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
+                                    dialog.CreateList(reader, getActivity());
+                                    onProductFound();
+                                    dialog.show(getFragmentManager(), "SelectDrugs");
+
+
+
+                                    dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
+                                        @Override
+                                        public void onClose() {
+                                            SecondSearch(dialog.getInternalID());
+
+                                        }
+
+                                        //If back button is pressed when dialog is up
+                                        @Override
+                                        public void onDismiss() {
+                                            enableSnapShot();
+                                        }
+                                    });
+                                }
+
                             }
 
-                            final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
-                            dialog.CreateList(reader, getActivity());
-                            onProductFound();
-                            dialog.show(getFragmentManager(), "SelectDrugs");
-
-
-
-                            dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
-                                @Override
-                                public void onClose() {
-                                    SecondSearch(dialog.getInternalID());
-
-                                }
-
-                                //If back button is pressed when dialog is up
-                                @Override
-                                public void onDismiss() {
-                                    enableSnapShot();
-                                }
-                            });
 
                         } catch (JSONException e) {
                             showToast(getString(R.string.Product_Error));

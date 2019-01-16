@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class ApiHandler {
 
@@ -36,12 +37,28 @@ public class ApiHandler {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            JSONArray reader = new JSONArray(response);
-                            if(reader.isNull(0))
-                            {
-                                return;
+
+                            Object json = new JSONTokener(response).nextValue();
+
+                            //If only one product is returned it is an JSONObject
+                            if (json instanceof JSONObject){
+
+                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+
+                                SecondSearch(id,language,context);
+
                             }
-                            mainActivity.ShowProductsDialog(reader);
+                            //If several products are available then it is an array
+                            else{
+
+                                JSONArray reader = new JSONArray(response);
+                                if(reader.isNull(0))
+                                {
+                                    return;
+                                }
+                                mainActivity.ShowProductsDialog(reader);
+                            }
+
 
 
                         } catch (JSONException e) {
