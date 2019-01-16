@@ -57,4 +57,6 @@
     <string name="Product_Error">Det här elementet är korrupt från databasen. Den har flagats för att updateras.</string>
     <string name="Communication_Error">Kunde inte kommunicera med databasen. Var vänlig försök igen senare.</string>
 
+    <string name="mainFont">sans-serif-condensed</string>
+
 </resources>

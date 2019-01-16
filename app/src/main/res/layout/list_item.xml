@@ -16,7 +16,8 @@
         android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorTabText" />
+        android:textColor="@color/colorTabText"
+        android:fontFamily="@string/mainFont"/>
 
     <TextView
         android:id="@+id/lbListItem"
@@ -27,7 +28,8 @@
         android:textColor="@color/colorTabText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true" />
+        android:clickable="true"
+        android:fontFamily="@string/mainFont"/>
 
     <View
         android:layout_width="match_parent"
