@@ -26,6 +26,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.document.FirebaseVisionDocumentTextRecognizer;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public ApiHandler mApiHandler;
     public MyDialogClass cdd;
     public String SearchLanguage;
-
+    private static final int PICK_IMAGE = 1;
     Item item;
     ArrayList<Item> RecentSearchesList = new ArrayList<>();
     ArrayList<String> listDataHeader;
@@ -411,10 +415,15 @@ public class MainActivity extends AppCompatActivity {
         final Button InfoButton = (Button) findViewById(R.id.information_button);
         InfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                cdd.show(); //Shows it
-                cdd.setCanceledOnTouchOutside(false); //Disables cancelations
-                cdd.setCancelable(false);
+//                cdd.show(); //Shows it
+//                cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+//                cdd.setCancelable(false);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"),PICK_IMAGE);
             }
+
         });
 
         if (prefs.getBoolean("bool", true)) {
@@ -461,7 +470,6 @@ public class MainActivity extends AppCompatActivity {
         Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(search));
         startActivity(browsIntent);
     }
-
 }
 
 
