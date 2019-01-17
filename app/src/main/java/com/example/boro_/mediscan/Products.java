@@ -29,7 +29,7 @@ public class Products {
         Name = obj.optString("Name");
         LegalName = obj.optString("LegalName");
         DateApproved = obj.optString("DateApproved");
-        Prescription = obj.optString("Prescripton");
+        Prescription = obj.optString("Prescription");
         ProductClassification = obj.optString("ProductClassification");
         Strength = obj.optString("Strength");
         StrengthGroupNumber = obj.optString("StrengthGroupName");
@@ -43,7 +43,6 @@ public class Products {
         PharmaceuticalProductID = obj.optString("PharmaceuticalProductID");
         ComprefName = obj.optString("ComprefName");
         AuthorizationProcedure = obj.optString("AuthorizationProcedure");
-
 
     }
 }

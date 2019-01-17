@@ -27,10 +27,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,12 +63,14 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    final Context context = this;
     BottomNavigationView bottomNavigationView;
     Menu menuNav;
     MenuItem tab1;
     MenuItem tab2;
     MenuItem tab3;
     EditText SearchBar;
+    Button FassButton;
     boolean tabCreated = false;
     public ApiHandler mApiHandler;
     public MyDialogClass cdd;
@@ -92,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         SetupLanguage();
+
 
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -244,10 +249,12 @@ public class MainActivity extends AppCompatActivity {
                 if (stringToBeChecked.equals((String)RecentSearchesList.get(i).Products.InternalID))
                 {
                     recentItems.remove(i);
-                    recentItems.add(i, object);
+                    recentItems.add(0, object);
                     RecentSearchesList.remove(i);
-                    RecentSearchesList.add(i, item);
-                    initializeResultView(RecentSearchesList.get(i));
+                    RecentSearchesList.add(0, item);
+                    recentSearchListTitle.remove(i);
+                    recentSearchListTitle.add(0, title);
+                    initializeResultView(RecentSearchesList.get(0));
                     return;
                 }
             }
@@ -477,9 +484,15 @@ public class MainActivity extends AppCompatActivity {
         final Button InfoButton = (Button) findViewById(R.id.information_button);
         InfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                cdd.show(); //Shows it
-                cdd.setCanceledOnTouchOutside(false); //Disables cancelations
-                cdd.setCancelable(false);
+
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.how_to);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+                //cdd.show(); //Shows it
+                //cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+                //cdd.setCancelable(false);
             }
         });
 
@@ -603,6 +616,34 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
 
+    }
+
+    public void FassSearch (String input)
+    {
+        String search = "https://www.fass.se/m/sok/";
+        search = search.concat(input);
+        search = search.concat("/public");
+        Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(search));
+        startActivity(browsIntent);
+    }
+
+    public void initializeFassSearch (String input)
+    {
+        final ExpandableListView layout = (ExpandableListView) findViewById(R.id.eLV);
+        final String searchString = input;
+        ViewTreeObserver vto = layout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Button button = findViewById(R.id.fass_Search);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FassSearch(searchString);
+                    }
+                });
+            }
+        });
     }
 
 }
