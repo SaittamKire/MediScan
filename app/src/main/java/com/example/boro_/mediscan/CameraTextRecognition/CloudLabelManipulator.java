@@ -61,28 +61,29 @@ public class CloudLabelManipulator {
                             int pos = paragraph.getWords().indexOf(words);
                             if((pos +1) < paragraph.getWords().size()){
                                 FirebaseVisionDocumentText.Word nextword = paragraph.getWords().get(pos + 1);
-                                if(nextword != null && nextword.getText().matches("mg|g|ml|kg|cl")){
+                                if(nextword != null && nextword.getText().matches("mg|g|ml|kg|cl")){ // Om dom tillhör två block
                                     String Dosage = words.getText(); //TODO Förra kanske var snabbare
                                     String Size = nextword.getText();
                                     Apistr = Dosage + " " + Size;
                                     return Apistr;
                                 }
-                            if(nextword != null && nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
-                                String Size = words.getText();
-                                String Divider = nextword.getText();
-                                Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
-                                return  Apistr;
+                            if(nextword != null && paragraph.getWords().get(pos+2) != null &&  paragraph.getWords().get(pos+3) != null){ // 22.2 mg format. Decimaltal eller annat
+                                   if (nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
+                                       String Size = words.getText();
+                                       String Divider = nextword.getText();
+                                       Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
+                                       return  Apistr;
+                                    }
+                                }
+
 
                             }
 
-                            }
                         }
-
-
-
                     }
 
                 }
+
             }
         }
         return Apistr;
