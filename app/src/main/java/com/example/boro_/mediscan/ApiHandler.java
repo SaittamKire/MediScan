@@ -87,6 +87,7 @@ public class ApiHandler {
 
                             if(response.equals("[]")){
                                 firstSearchListener.onEmptyResult();
+
                                 return;
                             }
 

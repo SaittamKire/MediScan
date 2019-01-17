@@ -260,16 +260,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSecondSearchResult(JSONObject product) {
                         CreateItem(product);
+                        ShowHideProgressBar(false);
                     }
 
                     @Override
                     public void onException(JSONException jsonexception) {
-
+                        ShowHideProgressBar(false);
                     }
 
                     @Override
                     public void onVolleyError(VolleyError error) {
-
+                        ShowHideProgressBar(false);
                     }
                 });
             }
@@ -632,6 +633,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onEmptyResult() {
                 Toast.makeText(MainActivity.this,getString(R.string.no_product_match) + " " + name,Toast.LENGTH_SHORT).show();
+                ShowHideProgressBar(false);
             }
 
             @Override
@@ -642,16 +644,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSingleResult(JSONObject finalProduct) {
                 CreateItem(finalProduct);
+                ShowHideProgressBar(false);
             }
 
             @Override
             public void onException(JSONException jsonexception) {
-
+                ShowHideProgressBar(false);
             }
 
             @Override
             public void onVolleyError(VolleyError volleyError) {
-
+            ShowHideProgressBar(false);
             }
         });
     }
