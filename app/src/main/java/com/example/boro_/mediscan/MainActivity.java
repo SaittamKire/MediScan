@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -27,10 +31,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -63,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    final Context context = this;
     BottomNavigationView bottomNavigationView;
     Menu menuNav;
     MenuItem tab1;
@@ -74,7 +81,10 @@ public class MainActivity extends AppCompatActivity {
     public MyDialogClass cdd;
     public String SearchLanguage;
 
+
+    boolean hasScanBeenClicked;
     Item item;
+    Fragment ScanFragment;
     ArrayList<Item> RecentSearchesList = new ArrayList<>();
     ArrayList<String> listDataHeader;
     ArrayList<String> recentSearchListTitle = new ArrayList<>();
@@ -92,9 +102,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
 
+        ShowHideProgressBar(false);
 
         SetupLanguage();
 
+
+
+
+
+        hasScanBeenClicked = false;
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         menuNav = bottomNavigationView.getMenu();
@@ -107,38 +123,8 @@ public class MainActivity extends AppCompatActivity {
 
         initData();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener
-                (new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment selectedFragment = null;
-                        Bundle bundle = new Bundle();
-
-                        bundle.putSerializable("hashmap", listHash);
-                        bundle.putStringArrayList("listheader", listDataHeader);
-                        switch (item.getItemId()) {
-                            case R.id.recent_search_tab:
-                                selectedFragment = new RecentSearches();
-                                bundle.putStringArrayList("listheaderTitle", recentSearchListTitle);
-                                selectedFragment.setArguments(bundle);
-                                break;
-                            case R.id.scan_tab:
-                                selectedFragment = new Scan();
-                                break;
-                            case R.id.retrived_data_tab:
-                                selectedFragment = new RetrievedData();
-                                bundle.putSerializable("hashmap", listHash);
-                                bundle.putStringArrayList("listheader", listDataHeader);
-                                selectedFragment.setArguments(bundle);
-                                //((RetrievedData) selectedFragment).update();
-                                break;
-                        }
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, selectedFragment);
-                        transaction.commit();
-                        return true;
-                    }
-                });
+        TabListener();
+        TabReselected();
 
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -168,6 +154,86 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bottomNavigationView.setSelectedItemId(R.id.scan_tab);
+
+    }
+
+
+    public void TabReselected(){
+        bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+
+
+                switch(menuItem.getItemId()){
+                    case R.id.scan_tab:
+                        Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                        scan.focusLock();
+                        break;
+                    default: return;
+                }
+
+
+            }
+        });
+    }
+
+    public void TabListener(){
+        bottomNavigationView.setOnNavigationItemSelectedListener
+                (new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment selectedFragment = null;
+                        Bundle bundle = new Bundle();
+
+                        bundle.putSerializable("hashmap", listHash);
+                        bundle.putStringArrayList("listheader", listDataHeader);
+                        switch (item.getItemId()) {
+                            case R.id.recent_search_tab:
+                                selectedFragment = new RecentSearches();
+                                bundle.putStringArrayList("listheaderTitle", recentSearchListTitle);
+                                selectedFragment.setArguments(bundle);
+                                break;
+                            case R.id.scan_tab:
+                                try{
+                                    Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                                    if (scan != null && scan.isVisible()) {
+                                        scan.focusLock();
+                                    }
+                                }
+                                catch(Exception ex){
+                                    selectedFragment = new Scan();
+                                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
+                                    transaction.commit();
+                                    ScanFragment = selectedFragment;
+                                }
+                                return true;
+                            case R.id.retrived_data_tab:
+                                selectedFragment = new RetrievedData();
+                                bundle.putSerializable("hashmap", listHash);
+                                bundle.putStringArrayList("listheader", listDataHeader);
+                                selectedFragment.setArguments(bundle);
+                                //((RetrievedData) selectedFragment).update();
+                                break;
+                        }
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, selectedFragment);
+                        transaction.commit();
+                        return true;
+                    }
+                });
+    }
+
+    public void ShowHideProgressBar(boolean show){
+        if(!show){
+            findViewById(R.id.loading_bar).setVisibility(View.GONE);
+            findViewById(R.id.information_button).setVisibility(View.VISIBLE);
+        }
+        else{
+            findViewById(R.id.loading_bar).setVisibility(View.VISIBLE);
+            findViewById(R.id.information_button).setVisibility(View.GONE);
+        }
     }
 
     public void ShowProductsDialog(JSONArray reader){
@@ -201,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDismiss() {
-
+                ShowHideProgressBar(false);
             }
         });
     }
@@ -263,10 +329,12 @@ public class MainActivity extends AppCompatActivity {
                 if (stringToBeChecked.equals((String)RecentSearchesList.get(i).Products.InternalID))
                 {
                     recentItems.remove(i);
-                    recentItems.add(i, object);
+                    recentItems.add(0, object);
                     RecentSearchesList.remove(i);
-                    RecentSearchesList.add(i, item);
-                    initializeResultView(RecentSearchesList.get(i));
+                    RecentSearchesList.add(0, item);
+                    recentSearchListTitle.remove(i);
+                    recentSearchListTitle.add(0, title);
+                    initializeResultView(RecentSearchesList.get(0));
                     return;
                 }
             }
@@ -481,6 +549,7 @@ public class MainActivity extends AppCompatActivity {
                                         event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                             if (event == null || !event.isShiftPressed()) {
                                 // the user is done typing.
+                                ShowHideProgressBar(true);
                                 SearchValue = SearchBar.getText().toString();
                                 ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
                                 hideSoftKeyboard(SearchBar);
@@ -496,13 +565,23 @@ public class MainActivity extends AppCompatActivity {
         final Button InfoButton = (Button) findViewById(R.id.information_button);
         InfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                cdd.show(); //Shows it
-                cdd.setCanceledOnTouchOutside(false); //Disables cancelations
-                cdd.setCancelable(false);
+
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.how_to);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+                //cdd.show(); //Shows it
+                //cdd.setCanceledOnTouchOutside(false); //Disables cancelations
+                //cdd.setCancelable(false);
             }
         });
 
         if (prefs.getBoolean("bool", true)) {
+            if (!IsSupported()) {
+                Toast.makeText(this,"Not Supported",Toast.LENGTH_LONG);
+                //TODO Change the UI
+            }
             cdd.yes.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     SharedPreferences.Editor editor = getSharedPreferences("disclaimer", MODE_PRIVATE).edit();
@@ -514,7 +593,26 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
+    public boolean IsSupported (){
+        CameraManager cameraManager = (CameraManager) this.getSystemService(CAMERA_SERVICE);
+        String cameraID = null;
+        try {
+            for (String cameranum : cameraManager.getCameraIdList()){
+                CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameranum);
+                if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK){
+                    if (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL) == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED){
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    return true;
+    }
     public void hideSoftKeyboard(View view){
         InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -647,6 +745,36 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
 
+    }
+
+    public void FassSearch (String input)
+    {
+        String search = "https://www.fass.se/m/sok/";
+        search = search.concat(input);
+        search = search.concat("/public");
+        Intent browsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(search));
+        startActivity(browsIntent);
+    }
+
+    public void initializeFassSearch (String input)
+    {
+        final ExpandableListView layout = (ExpandableListView) findViewById(R.id.eLV);
+        final String searchString = input;
+        ViewTreeObserver vto = layout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Button button = findViewById(R.id.fass_Search);
+                if (button!= null) {
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FassSearch(searchString);
+                        }
+                    });
+                }
+            }
+        });
     }
 
 }

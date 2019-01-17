@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
@@ -25,16 +26,21 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -72,10 +78,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -92,6 +102,8 @@ public class    Scan extends Fragment {
     private static final int AWAITING_PRECAPTURE_STATE = 2;
     private static final int AWAITING_NON_PRECAPTURE_STATE = 3;
     private static final int PICTURE_TAKEN_STATE = 4;
+    private static final int REQUEST_TAKE_PHOTO = 1;
+    private static final int RESULT_OK = 1;
     private int currentCameraState = 0;
 
     //private CameraManager cameraManager;
@@ -138,6 +150,8 @@ public class    Scan extends Fragment {
 
     public Scan() {
         // Required empty public constructor
+
+        this.getId();
 
 
     }
@@ -209,11 +223,10 @@ public class    Scan extends Fragment {
             cameraView.setOnClickListener(onSnapshotClick);
         }
 
-
-/*        if (!cameraView.isAvailable()) {
+        if (!cameraView.isAvailable()) {
             cameraView.setSurfaceTextureListener(textureListener);
             return;
-        }*/
+        }
 
         try {
 
@@ -516,7 +529,6 @@ public class    Scan extends Fragment {
 
             capturePreviewRequest = captureBuilder.build();
             captureSession.setRepeatingRequest(capturePreviewRequest, captureCallback, backGroundHandler);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -606,7 +618,7 @@ public class    Scan extends Fragment {
     };
 
 
-    private void focusLock(){
+    public void focusLock(){
 
         try {
 
@@ -984,7 +996,83 @@ public class    Scan extends Fragment {
             }
         });
     }
+    String mCurrentPhotoPath;
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir =getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+    View.OnClickListener Media = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(getContext(),
+                            "com.example.boro_.mediscan.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+
+        }
+
+    };
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            File f = new File(mCurrentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            FirebaseVisionImage image;
+            try {
+                image = FirebaseVisionImage.fromFilePath(getContext(), contentUri);
+                FirebaseVisionDocumentTextRecognizer detector = FirebaseVision.getInstance()
+                        .getCloudDocumentTextRecognizer();
+                detector.processImage(image)
+                        .addOnSuccessListener(new OnSuccessListener<FirebaseVisionDocumentText>() { // Calls the api to get a firebasevisiondocument from the image we sent to the api.
+                            @Override
+                            public void onSuccess(FirebaseVisionDocumentText result) {
+                                getImageStrings(result); // Here we extracts the relevant information out of the object.
+                                // Task completed successfully
+                                // ...
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Task failed with an exception
+                                // ...
+                            }
+                        });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
     private void onProductFound(){
 
         Activity activity = getActivity();
@@ -1105,7 +1193,6 @@ public class    Scan extends Fragment {
         if (requestCode == 1) {
             if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 //TODO If permissions is not granted
-
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
