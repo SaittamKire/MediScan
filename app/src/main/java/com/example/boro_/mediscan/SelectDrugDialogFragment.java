@@ -42,16 +42,8 @@ public class SelectDrugDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
 
 
-
                         SelectedInternalID = InternalID.get(which).toString();
-
-                        //här ska vi kolla vilken som klickades samt sedan returna dess internal id
-                        Toast.makeText(getActivity(), getResources().getString(R.string.dialog_Drug_Clicked_1) + " " + SelectedInternalID + " " + getResources().getString(R.string.dialog_Drug_Clicked_2),
-                                Toast.LENGTH_LONG).show();
-
                         close1.onClose();
-
-
 
                     }
                 });
@@ -93,10 +85,6 @@ public class SelectDrugDialogFragment extends DialogFragment {
         catch(Exception ex){
 
         }
-
-        //list.add("Alvedon");
-        //list.add("Ipren");
-        //  list.add("treo");
 
         ArrayAdapter adapter = new ArrayAdapter<String>(
                 context,

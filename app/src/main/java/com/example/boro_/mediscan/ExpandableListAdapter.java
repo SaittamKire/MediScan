@@ -103,8 +103,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 {
                     case 0:
                         txtListChildTitle.setText(R.string.name);
+
                         String strength = listHashMap.get(context.getString(R.string.listProduct)).get(3);
-                        ((MainActivity)context).initializeFassSearch(childText+" "+strength);
+
+                        strength = strength.replace("%", "%25");
+
+                        ((MainActivity)context).initializeFassSearch(childText+"%20"+strength);
 
                         break;
                     case 1:

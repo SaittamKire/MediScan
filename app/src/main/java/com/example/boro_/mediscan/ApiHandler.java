@@ -1,11 +1,6 @@
 package com.example.boro_.mediscan;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -13,7 +8,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,13 +16,15 @@ import org.json.JSONTokener;
 
 public class ApiHandler {
 
-    MainActivity mainActivity;
+    //MainActivity mainActivity;
 
-    ApiHandler(MainActivity activity){
+    /*ApiHandler(MainActivity activity){
         mainActivity = activity;
-    }
+    }*/
+        public ApiHandler(){
 
-    public void FirstSearchNoStrength(String name, final String language, final Context context) {
+        }
+/*    public void FirstSearchNoStrength(String name, final String language, final Context context) {
 
 
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -55,8 +51,6 @@ public class ApiHandler {
                                 JSONArray reader = new JSONArray(response);
                                 if(reader.isNull(0))
                                 {
-                                    mainActivity.ShowHideProgressBar(false);
-                                    Toast.makeText(context, R.string.Not_Found_Error, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 mainActivity.ShowProductsDialog(reader);
@@ -66,7 +60,6 @@ public class ApiHandler {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            mainActivity.ShowHideProgressBar(false);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -74,18 +67,159 @@ public class ApiHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
-                mainActivity.ShowHideProgressBar(false);
+            }
+        });
+
+        queue.add(stringRequest);
+    }*/
+
+
+    public void FirstSearchNoStrength(String name, final String language, final Context context, final FirstSearchListener firstSearchListener) {
+
+
+        RequestQueue queue = VolleySingleton.getInstance(context).getRequestQueue();
+        String url = "http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearchNoStrength?name="+name+"&language="+language;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+
+                            if(response.equals("[]")){
+                                firstSearchListener.onEmptyResult();
+                                return;
+                            }
+
+                            Object json = new JSONTokener(response).nextValue();
+
+                            //If only one product is returned it is an JSONObject
+                            if (json instanceof JSONObject){
+
+                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+
+                                SecondSearch(id, language, context, new SecondSearchListener() {
+                                    @Override
+                                    public void onSecondSearchResult(JSONObject product) {
+
+                                        firstSearchListener.onSingleResult(product);
+                                    }
+
+                                    @Override
+                                    public void onException(JSONException jsonexception) {
+
+                                    }
+
+                                    @Override
+                                    public void onVolleyError(VolleyError error) {
+
+                                    }
+                                });
+
+                            }
+                            //If several products are available then it is an array
+                            else{
+
+                                JSONArray reader = new JSONArray(response);
+                                if(reader.isNull(0))
+                                {
+                                    return;
+                                }
+                                firstSearchListener.onMultipleResults(reader);
+                                //mainActivity.ShowProductsDialog(reader);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            firstSearchListener.onException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                firstSearchListener.onVolleyError(error);
             }
         });
 
         queue.add(stringRequest);
     }
 
+    public void FirstSearch(String name,String dosage, final String language, final Context context, final FirstSearchListener firstSearchListener) {
 
 
-    public void SecondSearch(String id, String language, final Context context) {
+        RequestQueue queue = VolleySingleton.getInstance(context).getRequestQueue();
+        //String url = "http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+name+"&language="+language;
+        String url="http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+name+"&strength="+dosage+"&language="+language+"&fbclid=IwAR00DSzecqYioxMBf3h53q42YNhFrjCbpfjE1BWDGsPg3yZkCqQqg3nxWko";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
 
-        RequestQueue queue = Volley.newRequestQueue(context);
+                            if(response.equals("[]")){
+                                firstSearchListener.onEmptyResult();
+                                return;
+                            }
+
+                            Object json = new JSONTokener(response).nextValue();
+
+                            //If only one product is returned it is an JSONObject
+                            if (json instanceof JSONObject){
+
+                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+
+                                SecondSearch(id, language, context, new SecondSearchListener() {
+                                    @Override
+                                    public void onSecondSearchResult(JSONObject product) {
+
+                                        firstSearchListener.onSingleResult(product);
+                                    }
+
+                                    @Override
+                                    public void onException(JSONException jsonexception) {
+
+                                    }
+
+                                    @Override
+                                    public void onVolleyError(VolleyError error) {
+
+                                    }
+                                });
+
+                            }
+                            //If several products are available then it is an array
+                            else{
+
+                                JSONArray reader = new JSONArray(response);
+                                if(reader.isNull(0))
+                                {
+                                    return;
+                                }
+                                firstSearchListener.onMultipleResults(reader);
+                                //mainActivity.ShowProductsDialog(reader);
+                            }
+
+                        } catch (JSONException e) {
+                            firstSearchListener.onException(e);
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                firstSearchListener.onVolleyError(error);
+            }
+        });
+
+        queue.add(stringRequest);
+    }
+
+    public void SecondSearch(String id, String language, final Context context, final SecondSearchListener secondSearchListener) {
+
+        RequestQueue queue = VolleySingleton.getInstance(context).getRequestQueue();
         String url ="http://213.66.251.184/Bottles/BottlesService.asmx/SecondSearch?id="+id+"&language_sv_en="+language;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -96,19 +230,17 @@ public class ApiHandler {
                             JSONObject obj = new JSONObject(response);
                             if(obj == null)
                             {
-                                mainActivity.ShowHideProgressBar(false);
-                                Toast.makeText(context, R.string.Not_Found_Error, Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
-                            mainActivity.CreateItem(obj);
-                            mainActivity.ShowHideProgressBar(false);
+                            secondSearchListener.onSecondSearchResult(obj);
+                            //mainActivity.CreateItem(obj);
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            secondSearchListener.onException(e);
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                            mainActivity.ShowHideProgressBar(false);
                         }
 
                         // Display the first 500 characters of the response string.
@@ -119,12 +251,27 @@ public class ApiHandler {
             public void onErrorResponse(VolleyError error) {
                 //TODO Handle different volley errors
                 Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
-                mainActivity.ShowHideProgressBar(false);
+                secondSearchListener.onVolleyError(error);
             }
         });
 
         queue.add(stringRequest);
     }
 
+public interface FirstSearchListener{
+
+        void onEmptyResult();
+        void onMultipleResults(JSONArray listResult);
+        void onSingleResult(JSONObject finalProduct);
+        void onException(JSONException jsonexception);
+        void onVolleyError(VolleyError volleyError);
+
+}
+public interface SecondSearchListener{
+
+    void onSecondSearchResult(JSONObject product);
+    void onException(JSONException jsonexception);
+    void onVolleyError(VolleyError error);
+    }
 
 }
