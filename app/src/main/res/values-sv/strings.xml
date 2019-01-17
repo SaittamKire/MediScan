@@ -39,6 +39,8 @@
     <string name="lifespan">Hållbarhet:</string>
     <string name="storageInfo">Förvaringsinformation:</string>
 
+    <string name="fassButton">SE PÅ FASS</string>
+
 
     //Wakeup Dialog Strings
     <string name="dialog_text">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>

@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.scan_tab:
                                 try{
-                                    Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                                    Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout); //frame layout är scan
                                     if (scan != null && scan.isVisible()) {
                                         scan.focusLock();
                                     }
@@ -214,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
                                 bundle.putSerializable("hashmap", listHash);
                                 bundle.putStringArrayList("listheader", listDataHeader);
                                 selectedFragment.setArguments(bundle);
-                                //((RetrievedData) selectedFragment).update();
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

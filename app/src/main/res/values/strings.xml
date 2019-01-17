@@ -43,6 +43,7 @@
     <string name="packageType"><u>Type:</u></string>
     <string name="lifespan">Lifespan:</string>
     <string name="storageInfo">Storage Information:</string>
+    <string name="fassButton">VIEW ON FASS</string>
 
 
     //Wakeup Dialog Strings
