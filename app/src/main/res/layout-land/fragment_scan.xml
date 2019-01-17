@@ -19,6 +19,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true">
 
+        <TextView
+            android:id="@+id/permission_not_granted_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/camera_not_granted"
+            android:textSize="24sp"/>
 
         <ImageView
             android:id="@+id/touchInfo"

@@ -31,9 +31,6 @@ public class CloudLabelManipulator {
         for (FirebaseVisionDocumentText.Block block : blocks) {
             for (FirebaseVisionDocumentText.Paragraph paragraph : block.getParagraphs()) { //TODO See if the size of the paragraph matches size of word, or if we can use paragraph size
                 for (FirebaseVisionDocumentText.Word words : paragraph.getWords()) {
-//                    if (words.getBoundingBox().height() == size) {
-//                        Apistr += "" + words.getText();
-//                    }
                     if (words.getBoundingBox().height() > size) {
                         size = words.getBoundingBox().height();
                         Apistr = words.getText();
@@ -64,28 +61,33 @@ public class CloudLabelManipulator {
                             int pos = paragraph.getWords().indexOf(words);
                             if((pos +1) < paragraph.getWords().size()){
                                 FirebaseVisionDocumentText.Word nextword = paragraph.getWords().get(pos + 1);
-                                if(nextword != null && nextword.getText().matches("mg|g|ml|kg|cl")){
+                                if(nextword != null && nextword.getText().matches("mg|g|ml|kg|cl")){ // Om dom tillhör två block
                                     String Dosage = words.getText(); //TODO Förra kanske var snabbare
                                     String Size = nextword.getText();
                                     Apistr = Dosage + " " + Size;
                                     return Apistr;
                                 }
-                            if(nextword != null && nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
-                                String Size = words.getText();
-                                String Divider = nextword.getText();
-                                Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
-                                return  Apistr;
+
+                            if (paragraph.getWords().size()-1 >= pos+3){ // TODO BUGGTESTA DETTA TACK. ELLER FUCKING DELETA DET
+                                if(nextword != null && paragraph.getWords().get(pos+2) != null &&  paragraph.getWords().get(pos+3) != null){ // 22.2 mg format. Decimaltal eller annat
+                                    if (nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
+                                        String Size = words.getText();
+                                        String Divider = nextword.getText();
+                                        Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
+                                        return  Apistr;
+                                    }
+                                }
+                            }
+
+
 
                             }
 
-                            }
                         }
-
-
-
                     }
 
                 }
+
             }
         }
         return Apistr;

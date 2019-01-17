@@ -42,6 +42,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+
 import org.json.JSONException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mApiHandler = new ApiHandler(this);
+        mApiHandler = new ApiHandler();
 
 
         SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
@@ -169,19 +171,18 @@ public class MainActivity extends AppCompatActivity {
                 Fragment selectedFragment;
                 switch(menuItem.getItemId()){
                     case R.id.scan_tab:
-                        try {
+                        try{
                             Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
                             scan.focusLock();
                         }
-
-                        catch(Exception ex) {
+                        catch(Exception ex){
                             selectedFragment = new Scan();
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
                             transaction.commit();
-                            ScanFragment = selectedFragment;
-                            break;
                         }
+                        return;
+
                     default: return;
                 }
 
@@ -237,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
                                 bundle.putSerializable("hashmap", listHash);
                                 bundle.putStringArrayList("listheader", listDataHeader);
                                 selectedFragment.setArguments(bundle);
-                                //((RetrievedData) selectedFragment).update();
                                 break;
                         }
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -268,7 +268,25 @@ public class MainActivity extends AppCompatActivity {
         dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
             @Override
             public void onClose() {
-                mApiHandler.SecondSearch(dialog.getInternalID(),SearchLanguage,getApplicationContext());
+                //mApiHandler.SecondSearch(dialog.getInternalID(),SearchLanguage,getApplicationContext());
+
+                mApiHandler.SecondSearch(dialog.getInternalID(), SearchLanguage, getApplicationContext(), new ApiHandler.SecondSearchListener() {
+                    @Override
+                    public void onSecondSearchResult(JSONObject product) {
+                        CreateItem(product);
+                        ShowHideProgressBar(false);
+                    }
+
+                    @Override
+                    public void onException(JSONException jsonexception) {
+                        ShowHideProgressBar(false);
+                    }
+
+                    @Override
+                    public void onVolleyError(VolleyError error) {
+                        ShowHideProgressBar(false);
+                    }
+                });
             }
 
             @Override
@@ -624,8 +642,35 @@ public class MainActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public void ApiFirstSearchNoStrengthCallback(String name) { //Need callback to get Context.
-        mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this);
+    public void ApiFirstSearchNoStrengthCallback(final String name) { //Need callback to get Context.
+        mApiHandler.FirstSearchNoStrength(name, SearchLanguage, this, new ApiHandler.FirstSearchListener() {
+            @Override
+            public void onEmptyResult() {
+                Toast.makeText(MainActivity.this,getString(R.string.no_product_match) + " " + name,Toast.LENGTH_SHORT).show();
+                ShowHideProgressBar(false);
+            }
+
+            @Override
+            public void onMultipleResults(JSONArray listResult) {
+                ShowProductsDialog(listResult);
+            }
+
+            @Override
+            public void onSingleResult(JSONObject finalProduct) {
+                CreateItem(finalProduct);
+                ShowHideProgressBar(false);
+            }
+
+            @Override
+            public void onException(JSONException jsonexception) {
+                ShowHideProgressBar(false);
+            }
+
+            @Override
+            public void onVolleyError(VolleyError volleyError) {
+            ShowHideProgressBar(false);
+            }
+        });
     }
 
     private void SetupLanguage(){

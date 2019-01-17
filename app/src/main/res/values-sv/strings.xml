@@ -39,6 +39,8 @@
     <string name="lifespan">Hållbarhet:</string>
     <string name="storageInfo">Förvaringsinformation:</string>
 
+    <string name="fassButton">SE PÅ FASS</string>
+
 
     //Wakeup Dialog Strings
     <string name="dialog_text">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>
@@ -57,7 +59,7 @@
     <string name="Product_Error">Det här elementet är korrupt från databasen. Den har flagats för att updateras.</string>
     <string name="Communication_Error">Kunde inte kommunicera med databasen. Var vänlig försök igen senare.</string>
     <string name="Not_Found_Error">Hittade ingenting i databasen.</string>
-
+    <string name="camera_not_granted">Du har inte godkänt användninga av kameran.</string>
     <string name="mainFont">sans-serif-condensed</string>
 
 
