@@ -107,6 +107,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                         String strength = listHashMap.get(context.getString(R.string.listProduct)).get(3);
 
                         strength = strength.replace("%", "%25");
+                        strength = strength.replace("/", " ");
+                        
 
                         ((MainActivity)context).initializeFassSearch(childText+"%20"+strength);
 
