@@ -16,62 +16,11 @@ import org.json.JSONTokener;
 
 public class ApiHandler {
 
-    //MainActivity mainActivity;
 
-    /*ApiHandler(MainActivity activity){
-        mainActivity = activity;
-    }*/
         public ApiHandler(){
 
         }
-/*    public void FirstSearchNoStrength(String name, final String language, final Context context) {
 
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearchNoStrength?name="+name+"&language="+language;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-
-                            Object json = new JSONTokener(response).nextValue();
-
-                            //If only one product is returned it is an JSONObject
-                            if (json instanceof JSONObject){
-
-                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
-
-                                SecondSearch(id,language,context);
-
-                            }
-                            //If several products are available then it is an array
-                            else{
-
-                                JSONArray reader = new JSONArray(response);
-                                if(reader.isNull(0))
-                                {
-                                    return;
-                                }
-                                mainActivity.ShowProductsDialog(reader);
-                            }
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        queue.add(stringRequest);
-    }*/
 
 
     public void FirstSearchNoStrength(String name, final String language, final Context context, final FirstSearchListener firstSearchListener) {
@@ -126,7 +75,7 @@ public class ApiHandler {
                                     return;
                                 }
                                 firstSearchListener.onMultipleResults(reader);
-                                //mainActivity.ShowProductsDialog(reader);
+
                             }
 
                         } catch (JSONException e) {
@@ -150,7 +99,6 @@ public class ApiHandler {
 
 
         RequestQueue queue = VolleySingleton.getInstance(context).getRequestQueue();
-        //String url = "http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+name+"&language="+language;
         String url="http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+name+"&strength="+dosage+"&language="+language+"&fbclid=IwAR00DSzecqYioxMBf3h53q42YNhFrjCbpfjE1BWDGsPg3yZkCqQqg3nxWko";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -198,7 +146,7 @@ public class ApiHandler {
                                     return;
                                 }
                                 firstSearchListener.onMultipleResults(reader);
-                                //mainActivity.ShowProductsDialog(reader);
+
                             }
 
                         } catch (JSONException e) {
@@ -235,7 +183,6 @@ public class ApiHandler {
                             }
 
                             secondSearchListener.onSecondSearchResult(obj);
-                            //mainActivity.CreateItem(obj);
 
 
                         } catch (JSONException e) {
@@ -244,8 +191,6 @@ public class ApiHandler {
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
 
-                        // Display the first 500 characters of the response string.
-                        //                       mTextView.setText("Response is: "+ response.substring(0,500));
                     }
                 }, new Response.ErrorListener() {
             @Override

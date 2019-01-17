@@ -174,7 +174,6 @@ public class    Scan extends Fragment {
             texturewidth = width;
             textureheight = height;
             openCamera();
-            transformImage(width, height);
 
         }
 
@@ -254,7 +253,7 @@ public class    Scan extends Fragment {
                     selectedcameraId = cameraId;
                 }
             }
-
+            transformImage(texturewidth, textureheight);
 
             rotation = getRotationCompensation(selectedcameraId, getActivity(), getContext());
 
