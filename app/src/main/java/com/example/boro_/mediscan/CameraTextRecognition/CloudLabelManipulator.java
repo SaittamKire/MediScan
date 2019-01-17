@@ -31,9 +31,6 @@ public class CloudLabelManipulator {
         for (FirebaseVisionDocumentText.Block block : blocks) {
             for (FirebaseVisionDocumentText.Paragraph paragraph : block.getParagraphs()) { //TODO See if the size of the paragraph matches size of word, or if we can use paragraph size
                 for (FirebaseVisionDocumentText.Word words : paragraph.getWords()) {
-//                    if (words.getBoundingBox().height() == size) {
-//                        Apistr += "" + words.getText();
-//                    }
                     if (words.getBoundingBox().height() > size) {
                         size = words.getBoundingBox().height();
                         Apistr = words.getText();

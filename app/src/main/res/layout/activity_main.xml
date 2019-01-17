@@ -48,14 +48,14 @@
             android:indeterminate="true" />
 
         <Button
-        android:id="@+id/information_button"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="2dp"
-        android:background="@drawable/information"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:gravity="center_horizontal"/>
+            android:id="@+id/information_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_help_black_24dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:gravity="center_horizontal" />
     </LinearLayout>
 
     </LinearLayout>
