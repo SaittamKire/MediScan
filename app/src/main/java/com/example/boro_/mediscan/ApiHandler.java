@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -63,6 +64,7 @@ public class ApiHandler {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            mainActivity.ShowHideProgressBar(false);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -70,6 +72,7 @@ public class ApiHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                mainActivity.ShowHideProgressBar(false);
             }
         });
 
@@ -95,11 +98,13 @@ public class ApiHandler {
                             }
 
                             mainActivity.CreateItem(obj);
+                            mainActivity.ShowHideProgressBar(false);
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            mainActivity.ShowHideProgressBar(false);
                         }
 
                         // Display the first 500 characters of the response string.
@@ -110,6 +115,7 @@ public class ApiHandler {
             public void onErrorResponse(VolleyError error) {
                 //TODO Handle different volley errors
                 Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                mainActivity.ShowHideProgressBar(false);
             }
         });
 

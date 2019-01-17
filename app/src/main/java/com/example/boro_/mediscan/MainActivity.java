@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("disclaimer", MODE_PRIVATE);
         cdd = new MyDialogClass(this); //Creates disclaimer-dialog
 
+        ShowHideProgressBar(false);
 
         SetupLanguage();
 
@@ -168,6 +169,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void ShowHideProgressBar(boolean show){
+        if(!show){
+            findViewById(R.id.loading_bar).setVisibility(View.GONE);
+            findViewById(R.id.information_button).setVisibility(View.VISIBLE);
+        }
+        else{
+            findViewById(R.id.loading_bar).setVisibility(View.VISIBLE);
+            findViewById(R.id.information_button).setVisibility(View.GONE);
+        }
+    }
+
     public void ShowProductsDialog(JSONArray reader){
 
         final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
@@ -182,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDismiss() {
-
+                ShowHideProgressBar(false);
             }
         });
     }
@@ -462,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
                                         event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                             if (event == null || !event.isShiftPressed()) {
                                 // the user is done typing.
+                                ShowHideProgressBar(true);
                                 SearchValue = SearchBar.getText().toString();
                                 ApiFirstSearchNoStrengthCallback(SearchValue); //Callback to get Context to ApiHandler
                                 hideSoftKeyboard(SearchBar);
