@@ -721,12 +721,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onGlobalLayout() {
                 Button button = findViewById(R.id.fass_Search);
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        FassSearch(searchString);
-                    }
-                });
+                if (button!= null) {
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            FassSearch(searchString);
+                        }
+                    });
+                }
             }
         });
     }
