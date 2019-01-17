@@ -103,7 +103,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 {
                     case 0:
                         txtListChildTitle.setText(R.string.name);
-                        ((MainActivity)context).initializeFassSearch(childText);
+                        String strength = listHashMap.get(context.getString(R.string.listProduct)).get(3);
+                        ((MainActivity)context).initializeFassSearch(childText+" "+strength);
+
                         break;
                     case 1:
                         txtListChildTitle.setText(R.string.presc);

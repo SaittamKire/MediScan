@@ -163,11 +163,21 @@ public class MainActivity extends AppCompatActivity {
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
 
 
+                Fragment selectedFragment;
                 switch(menuItem.getItemId()){
                     case R.id.scan_tab:
-                        Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                        scan.focusLock();
-                        break;
+                        try{
+                            Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                            scan.focusLock();
+                        }
+                        catch(Exception ex){
+                            selectedFragment = new Scan();
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
+                            transaction.commit();
+                        }
+                        return;
+
                     default: return;
                 }
 

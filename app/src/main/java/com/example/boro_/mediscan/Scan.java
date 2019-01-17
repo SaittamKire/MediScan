@@ -150,13 +150,6 @@ public class    Scan extends Fragment {
 
 
 
-    public Scan() {
-        // Required empty public constructor
-
-        this.getId();
-
-
-    }
 
     public static Scan newInstance() {
         Scan fragment = new Scan();
