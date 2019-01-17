@@ -32,6 +32,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -115,6 +116,8 @@ public class    Scan extends Fragment {
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
 
+
+
     //Size supported by preview window
     private final static int MAX_PREVIEW_HEIGHT = 1080;
     private final static int MAX_PREVIEW_WIDTH = 1920;
@@ -134,8 +137,12 @@ public class    Scan extends Fragment {
 
     View v;
 
+
+
     public Scan() {
         // Required empty public constructor
+
+        this.getId();
 
 
     }
@@ -187,12 +194,24 @@ public class    Scan extends Fragment {
         @Override
         public void onClick(View v) {
 
+
+
             //Begin the photo capture process
 
             focusLock();
 
         }
     };
+
+
+
+
+
+
+
+
+
+
 
     public void openCamera() {
 
@@ -597,7 +616,7 @@ public class    Scan extends Fragment {
     };
 
 
-    private void focusLock(){
+    public void focusLock(){
 
         try {
 

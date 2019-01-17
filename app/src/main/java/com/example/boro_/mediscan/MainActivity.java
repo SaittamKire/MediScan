@@ -72,7 +72,10 @@ public class MainActivity extends AppCompatActivity {
     public MyDialogClass cdd;
     public String SearchLanguage;
 
+
+    boolean hasScanBeenClicked;
     Item item;
+    Fragment ScanFragment;
     ArrayList<Item> RecentSearchesList = new ArrayList<>();
     ArrayList<String> listDataHeader;
     ArrayList<String> recentSearchListTitle = new ArrayList<>();
@@ -94,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
         SetupLanguage();
 
 
+
+
+
+        hasScanBeenClicked = false;
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         menuNav = bottomNavigationView.getMenu();
         tab1 = menuNav.findItem(R.id.recent_search_tab);
@@ -105,38 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         initData();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener
-                (new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment selectedFragment = null;
-                        Bundle bundle = new Bundle();
-
-                        bundle.putSerializable("hashmap", listHash);
-                        bundle.putStringArrayList("listheader", listDataHeader);
-                        switch (item.getItemId()) {
-                            case R.id.recent_search_tab:
-                                selectedFragment = new RecentSearches();
-                                bundle.putStringArrayList("listheaderTitle", recentSearchListTitle);
-                                selectedFragment.setArguments(bundle);
-                                break;
-                            case R.id.scan_tab:
-                                selectedFragment = new Scan();
-                                break;
-                            case R.id.retrived_data_tab:
-                                selectedFragment = new RetrievedData();
-                                bundle.putSerializable("hashmap", listHash);
-                                bundle.putStringArrayList("listheader", listDataHeader);
-                                selectedFragment.setArguments(bundle);
-                                //((RetrievedData) selectedFragment).update();
-                                break;
-                        }
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frame_layout, selectedFragment);
-                        transaction.commit();
-                        return true;
-                    }
-                });
+        TabListener();
+        TabReselected();
 
         //Manually displaying the first fragment - one time only
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -166,6 +144,73 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    public void TabReselected(){
+        bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
+            @Override
+            public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+
+
+                switch(menuItem.getItemId()){
+                    case R.id.scan_tab:
+                        Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                        scan.focusLock();
+                        break;
+                    default: return;
+                }
+
+
+            }
+        });
+    }
+
+    public void TabListener(){
+        bottomNavigationView.setOnNavigationItemSelectedListener
+                (new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment selectedFragment = null;
+                        Bundle bundle = new Bundle();
+
+                        bundle.putSerializable("hashmap", listHash);
+                        bundle.putStringArrayList("listheader", listDataHeader);
+                        switch (item.getItemId()) {
+                            case R.id.recent_search_tab:
+                                selectedFragment = new RecentSearches();
+                                bundle.putStringArrayList("listheaderTitle", recentSearchListTitle);
+                                selectedFragment.setArguments(bundle);
+                                break;
+                            case R.id.scan_tab:
+                                try{
+                                    Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                                    if (scan != null && scan.isVisible()) {
+                                        scan.focusLock();
+                                    }
+                                }
+                                catch(Exception ex){
+                                    selectedFragment = new Scan();
+                                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
+                                    transaction.commit();
+                                    ScanFragment = selectedFragment;
+                                }
+                                return true;
+                            case R.id.retrived_data_tab:
+                                selectedFragment = new RetrievedData();
+                                bundle.putSerializable("hashmap", listHash);
+                                bundle.putStringArrayList("listheader", listDataHeader);
+                                selectedFragment.setArguments(bundle);
+                                //((RetrievedData) selectedFragment).update();
+                                break;
+                        }
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, selectedFragment);
+                        transaction.commit();
+                        return true;
+                    }
+                });
     }
 
     public void ShowProductsDialog(JSONArray reader){
