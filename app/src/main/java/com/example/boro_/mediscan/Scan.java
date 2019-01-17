@@ -568,6 +568,7 @@ public class    Scan extends Fragment {
                 }
                 case AWAITING_PRECAPTURE_STATE: {
                     // CONTROL_AE_STATE can be null on some devices
+                    // CONTROL_AE_STATE can be null on some devices
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
 
                     if (aeState == null ||
@@ -991,9 +992,8 @@ public class    Scan extends Fragment {
                                 }
 
                                 else{
-
                                     final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
-                                    dialog.CreateList(reader, getActivity());
+                                    dialog.CreateList(Apistr.getDrug(reader), getActivity());
                                     onProductFound();
                                     dialog.show(getFragmentManager(), "SelectDrugs");
 
