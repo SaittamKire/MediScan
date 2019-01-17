@@ -52,6 +52,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -110,6 +111,7 @@ public class    Scan extends Fragment {
     private ImageButton snapShotButton;
     private ProgressBar progressBar;
     private ScanningView scanView;
+    private TextView noPermissions;
     private Size streamsize;
     private CameraDevice cameraDevice;
     private CaptureRequest.Builder captureBuilder;
@@ -125,9 +127,7 @@ public class    Scan extends Fragment {
     private HandlerThread backGroundThread;
     private Handler backGroundHandler;
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
-
-
-
+    private ApiHandler apiHandler;
 
     //Size supported by preview window
     private final static int MAX_PREVIEW_HEIGHT = 1080;
@@ -148,8 +148,13 @@ public class    Scan extends Fragment {
 
     View v;
 
+    public Scan() {
+        // Required empty public constructor
+
+        this.getId();
 
 
+    }
 
     public static Scan newInstance() {
         Scan fragment = new Scan();
@@ -179,7 +184,6 @@ public class    Scan extends Fragment {
             texturewidth = width;
             textureheight = height;
 
-
             transformImage(width, height);
         }
 
@@ -199,8 +203,6 @@ public class    Scan extends Fragment {
         @Override
         public void onClick(View v) {
 
-
-
             //Begin the photo capture process
 
             focusLock();
@@ -208,22 +210,17 @@ public class    Scan extends Fragment {
         }
     };
 
-
-
-
-
-
-
-
-
-
-
     public void openCamera() {
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
+            noPermissions.setVisibility(View.VISIBLE);
             return;
+        }
+        else{
+            noPermissions.setVisibility(View.GONE);
+            cameraView.setOnClickListener(onSnapshotClick);
         }
 
         if (!cameraView.isAvailable()) {
@@ -572,7 +569,6 @@ public class    Scan extends Fragment {
                 }
                 case AWAITING_PRECAPTURE_STATE: {
                     // CONTROL_AE_STATE can be null on some devices
-                    // CONTROL_AE_STATE can be null on some devices
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
 
                     if (aeState == null ||
@@ -904,143 +900,101 @@ public class    Scan extends Fragment {
 
     public void SecondSearch(String InternalID){
 
-        //String InternalID = object.optString("InternalID");
-
         String searchlang = ((MainActivity)getActivity()).SearchLanguage;
         if (searchlang.equals("")){searchlang = "en";}
 
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url ="http://213.66.251.184/Bottles/BottlesService.asmx/SecondSearch?id="+InternalID+"&language_sv_en="+searchlang;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            if(obj == null)
-                            {
-                                return;
-                            }
-
-                            ((MainActivity)getActivity()).CreateItem(obj);
-
-
-                        } catch (JSONException e) {
-                            enableSnapShot();
-                            e.printStackTrace();
-                        }
-
-                        // Display the first 500 characters of the response string.
-                        //                       mTextView.setText("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
+        apiHandler.SecondSearch(InternalID, searchlang, getContext(), new ApiHandler.SecondSearchListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-               //TODO Handle different volley errors
-                Toast.makeText(getContext(), R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+            public void onSecondSearchResult(JSONObject product) {
+                ((MainActivity)getActivity()).CreateItem(product);
+            }
+
+            @Override
+            public void onException(JSONException jsonexception) {
+                enableSnapShot();
+            }
+
+            @Override
+            public void onVolleyError(VolleyError error) {
+
                 enableSnapShot();
             }
         });
-
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
-    }
-
-
-
-    public void onClick(SelectDrugDialogFragment dialog, int which){
 
     }
 
 
     public void getImageStrings(FirebaseVisionDocumentText result){
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
 
         String searchlang = ((MainActivity)getActivity()).SearchLanguage;
+
         if (searchlang.equals("")){searchlang = "en";}
 
         final CloudLabelManipulator Apistr = new CloudLabelManipulator(result); // Creates a cloudlabelmanipulator object out of the result from the firebasedocumenttext object we made earlier. we use functions in this class to find relevant text
-        String url="http://213.66.251.184/Bottles/BottlesService.asmx/FirstSearch?name="+Apistr.getFirstStr()+"&strength="+Apistr.getDosage()+"&language="+searchlang+"&fbclid=IwAR00DSzecqYioxMBf3h53q42YNhFrjCbpfjE1BWDGsPg3yZkCqQqg3nxWko";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (response.equals("[]")){  // The API we have sends this if there is nothing to fetch so this is the same as 404
 
-                            showToast(getString(R.string.no_product_match) + " " + Apistr.getFirstStr());
-                            enableSnapShot();
-                            return;
-                        }
-                        try {
-
-                            Object json = new JSONTokener(response).nextValue();
-
-                            //If only one product is returned it is an JSONObject
-                            if (json instanceof JSONObject){
-
-                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
-
-                                SecondSearch(id);
-
-                            }
-                            //Else it is an JSONArray
-                            else if (json instanceof JSONArray){
-
-                                JSONArray reader = new JSONArray(response); // Makes a reader of the response we got from the API
-
-                                if(reader.isNull(0))
-                                {
-                                    return;
-                                }
-
-                                else{
-                                    final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
-                                    dialog.CreateList(Apistr.getDrug(reader), getActivity());
-                                    onProductFound();
-                                    dialog.show(getFragmentManager(), "SelectDrugs");
-
-
-
-                                    dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
-                                        @Override
-                                        public void onClose() {
-                                            SecondSearch(dialog.getInternalID());
-
-                                        }
-
-                                        //If back button is pressed when dialog is up
-                                        @Override
-                                        public void onDismiss() {
-                                            enableSnapShot();
-                                        }
-                                    });
-                                }
-
-                            }
-
-
-                        } catch (JSONException e) {
-                            showToast(getString(R.string.Product_Error));
-                            enableSnapShot();
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
+        apiHandler.FirstSearch(Apistr.getFirstStr(), Apistr.getDosage(), searchlang, getContext(), new ApiHandler.FirstSearchListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-//
-                //TODO Handle different volley errors
-                showToast(error.getMessage());
+            public void onEmptyResult() {
+
+                showToast(getString(R.string.no_product_match) + " " + Apistr.getFirstStr());
+                enableSnapShot();
+
+            }
+
+            @Override
+            public void onMultipleResults(JSONArray listResult) {
+
+                if(listResult.isNull(0))
+                {
+                    return;
+                }
+
+                else{
+
+                    final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
+                    dialog.CreateList(listResult, getActivity());
+                    onProductFound();
+                    dialog.show(getFragmentManager(), "SelectDrugs");
+
+
+                    dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
+                        @Override
+                        public void onClose() {
+                            SecondSearch(dialog.getInternalID());
+
+                        }
+
+                        //If back button is pressed when dialog is up
+                        @Override
+                        public void onDismiss() {
+                            enableSnapShot();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onSingleResult(JSONObject finalProduct) {
+
+                String id = null;
+                try {
+                    id = ((JSONObject)finalProduct).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                SecondSearch(id);
+            }
+
+            @Override
+            public void onException(JSONException jsonexception) {
+                enableSnapShot();
+            }
+
+            @Override
+            public void onVolleyError(VolleyError volleyError) {
                 enableSnapShot();
             }
         });
-
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
     }
     String mCurrentPhotoPath;
 
@@ -1176,6 +1130,7 @@ public class    Scan extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this.getContext());
+        apiHandler = new ApiHandler();
     }
 
     @Override
@@ -1194,9 +1149,9 @@ public class    Scan extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         cameraView = view.findViewById(R.id.previewWindow);
-        cameraView.setOnClickListener(onSnapshotClick);
         scanView = view.findViewById(R.id.scanView);
-
+        noPermissions = view.findViewById(R.id.permission_not_granted_text);
+        noPermissions.setVisibility(View.GONE);
     }
 
     @Override
@@ -1205,7 +1160,12 @@ public class    Scan extends Fragment {
 
         startBackGroundThread();
 
-        openCamera();
+        if (cameraView.isAvailable()) {
+            openCamera();
+        } else {
+            cameraView.setSurfaceTextureListener(textureListener);
+        }
+        //openCamera();
 
     }
 
