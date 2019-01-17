@@ -67,7 +67,7 @@ public class CloudLabelManipulator {
                                     Apistr = Dosage + " " + Size;
                                     return Apistr;
                                 }
-                            if(nextword != null && nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
+                            if(nextword != null && nextword.getText().matches(",|.|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
                                 String Size = words.getText();
                                 String Divider = nextword.getText();
                                 Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
