@@ -38,16 +38,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right">
-
-            <Button
-                android:id="@+id/information_button"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/information"
-                android:gravity="left"
-                android:textAlignment="center" />
+        <Button
+            android:id="@+id/information_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/information"
+            android:textAlignment="center"
+            android:gravity="left"/>
 
         </LinearLayout>
     </LinearLayout>
@@ -59,9 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomDivider"
-        android:layout_alignParentStart="true"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="-58dp"
         android:animateLayoutChanges="true">
 
     </FrameLayout>

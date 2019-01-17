@@ -14,20 +14,13 @@
         android:layout_alignParentTop="true"/>
 
 
-    <FrameLayout
+<FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:text="Button" />
 
-        <ImageView
+    <ImageView
         android:id="@+id/touchInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,32 +42,38 @@
         app:touchIconColor="@color/colorPrimary"/>
 
 
-    </FrameLayout>
 
 
-    <!--    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true">
+</FrameLayout>
 
 
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"/>
 
-    &lt;!&ndash;        <ImageButton
-                android:id="@+id/cameraSnap"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center"
-                app:srcCompat="@android:drawable/ic_menu_camera" />&ndash;&gt;
 
-        </FrameLayout>-->
+
+<!--    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
+
+
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
+&lt;!&ndash;        <ImageButton
+            android:id="@+id/cameraSnap"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            app:srcCompat="@android:drawable/ic_menu_camera" />&ndash;&gt;
+
+    </FrameLayout>-->
 
 
 
