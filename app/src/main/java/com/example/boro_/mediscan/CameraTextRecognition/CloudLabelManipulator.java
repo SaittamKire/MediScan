@@ -67,14 +67,18 @@ public class CloudLabelManipulator {
                                     Apistr = Dosage + " " + Size;
                                     return Apistr;
                                 }
-                            if(nextword != null && paragraph.getWords().get(pos+2) != null &&  paragraph.getWords().get(pos+3) != null){ // 22.2 mg format. Decimaltal eller annat
-                                   if (nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
-                                       String Size = words.getText();
-                                       String Divider = nextword.getText();
-                                       Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
-                                       return  Apistr;
+
+                            if (paragraph.getWords().size()-1 >= pos+3){ // TODO BUGGTESTA DETTA TACK. ELLER FUCKING DELETA DET
+                                if(nextword != null && paragraph.getWords().get(pos+2) != null &&  paragraph.getWords().get(pos+3) != null){ // 22.2 mg format. Decimaltal eller annat
+                                    if (nextword.getText().matches(",|.|/|-|:|;") && paragraph.getWords().get(pos+3).getText().matches("mg|g|ml|kg|cl")){
+                                        String Size = words.getText();
+                                        String Divider = nextword.getText();
+                                        Apistr = Size + Divider + paragraph.getWords().get(pos + 2).getText() + " " + paragraph.getWords().get(pos+3).getText();
+                                        return  Apistr;
                                     }
                                 }
+                            }
+
 
 
                             }
