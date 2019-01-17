@@ -49,7 +49,9 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -121,6 +123,7 @@ public class    Scan extends Fragment {
     private int textureheight;
     private String selectedcameraId;
     private boolean mFlashSupported;
+    private boolean isCameraSupported = true;
 
     private HandlerThread backGroundThread;
     private Handler backGroundHandler;
@@ -1117,6 +1120,7 @@ public class    Scan extends Fragment {
                             public void onFailure(@NonNull Exception e) {
                                 // Task failed with an exception
                                 // ...
+                                int i = 0;
                             }
                         });
             } catch (IOException e) {
@@ -1188,10 +1192,32 @@ public class    Scan extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_scan, container, false);
+        final View v;
+
+        Bundle b = this.getArguments();
+        try {
+            if(b.getBoolean("isCamerasupported") != true)
+            {
+                isCameraSupported = false;
+            }
+
+        }
+        catch (NullPointerException ex)
+        {
+
+        }
 
         ActivityCompat.requestPermissions(getActivity(),new String[]
                 {Manifest.permission.CAMERA}, 1);
+
+        if (isCameraSupported == true)
+        {
+            v = inflater.inflate(R.layout.fragment_scan, container, false);
+        }
+        else
+        {
+            v = inflater.inflate(R.layout.camera_not_supported, container, false);
+        }
 
         this.v = v;
         return v;//inflater.inflate(R.layout.fragment_conversion, container, false);
@@ -1200,9 +1226,23 @@ public class    Scan extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        cameraView = view.findViewById(R.id.previewWindow);
-        cameraView.setOnClickListener(onSnapshotClick);
-        scanView = view.findViewById(R.id.scanView);
+        if (isCameraSupported) {
+            cameraView = view.findViewById(R.id.previewWindow);
+            cameraView.setOnClickListener(onSnapshotClick);
+            scanView = view.findViewById(R.id.scanView);
+        }
+
+        else
+        {
+            final Button cameraButton = v.findViewById(R.id.camera_not_supported_button);
+            cameraButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    CameraButtonClick();
+
+                }
+            });
+
+        }
 
     }
 
@@ -1212,7 +1252,10 @@ public class    Scan extends Fragment {
 
         startBackGroundThread();
 
-        openCamera();
+        if (isCameraSupported)
+        {
+            openCamera();
+        }
 
     }
 
@@ -1242,6 +1285,28 @@ public class    Scan extends Fragment {
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    void CameraButtonClick() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
+                        "com.example.boro_.mediscan.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
         }
     }
 }

@@ -117,17 +117,21 @@ public class MainActivity extends AppCompatActivity {
         tab3 = menuNav.findItem(R.id.retrived_data_tab);
         tab3.setEnabled(tabCreated);
         tab1.setEnabled(tabCreated);
-        tab2.setChecked(true);
 
         initData();
 
         TabListener();
-        TabReselected();
 
-        //Manually displaying the first fragment - one time only
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_layout, Scan.newInstance());
-        transaction.commit();
+
+        if (IsSupported())
+        {
+            TabReselected();
+                                //Manually displaying the first fragment - one time only
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, Scan.newInstance());
+            transaction.commit();
+        }
+
 
         if (prefs.getBoolean("bool", true)) {
             //Dialog logic
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setupButtons(prefs); //Will setup topbar buttons and searchfield
-
+        tab2.setChecked(true);
 
         final LinearLayout layout = (LinearLayout) findViewById(R.id.top_Bar);
         ViewTreeObserver vto = layout.getViewTreeObserver();
@@ -162,12 +166,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
 
-
+                Fragment selectedFragment;
                 switch(menuItem.getItemId()){
                     case R.id.scan_tab:
-                        Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                        scan.focusLock();
-                        break;
+                        try {
+                            Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                            scan.focusLock();
+                        }
+
+                        catch(Exception ex) {
+                            selectedFragment = new Scan();
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
+                            transaction.commit();
+                            ScanFragment = selectedFragment;
+                            break;
+                        }
                     default: return;
                 }
 
@@ -193,20 +207,31 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment.setArguments(bundle);
                                 break;
                             case R.id.scan_tab:
-                                try{
-                                    Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
-                                    if (scan != null && scan.isVisible()) {
-                                        scan.focusLock();
+
+                                if (IsSupported())
+                                {
+                                    try{
+                                        Scan scan = (Scan) getSupportFragmentManager().findFragmentById(R.id.frame_layout);
+                                        if (scan != null && scan.isVisible()) {
+                                            scan.focusLock();
+                                        }
                                     }
+                                    catch(Exception ex){
+                                        selectedFragment = new Scan();
+                                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                                        transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
+                                        transaction.commit();
+                                        ScanFragment = selectedFragment;
+                                    }
+                                    return true;
                                 }
-                                catch(Exception ex){
+                                else {
                                     selectedFragment = new Scan();
-                                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.frame_layout, selectedFragment, "SCAN");
-                                    transaction.commit();
-                                    ScanFragment = selectedFragment;
+                                    bundle.putBoolean("isCameraSupported", false);
+                                    selectedFragment.setArguments(bundle);
+
                                 }
-                                return true;
+                                break;
                             case R.id.retrived_data_tab:
                                 selectedFragment = new RetrievedData();
                                 bundle.putSerializable("hashmap", listHash);
