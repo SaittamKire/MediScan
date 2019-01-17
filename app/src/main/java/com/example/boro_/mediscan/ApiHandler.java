@@ -55,6 +55,8 @@ public class ApiHandler {
                                 JSONArray reader = new JSONArray(response);
                                 if(reader.isNull(0))
                                 {
+                                    mainActivity.ShowHideProgressBar(false);
+                                    Toast.makeText(context, R.string.Not_Found_Error, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 mainActivity.ShowProductsDialog(reader);
@@ -94,6 +96,8 @@ public class ApiHandler {
                             JSONObject obj = new JSONObject(response);
                             if(obj == null)
                             {
+                                mainActivity.ShowHideProgressBar(false);
+                                Toast.makeText(context, R.string.Not_Found_Error, Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
