@@ -168,6 +168,7 @@ public class    Scan extends Fragment {
             texturewidth = width;
             textureheight = height;
 
+
             transformImage(width, height);
         }
 

@@ -8,6 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -484,6 +488,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (prefs.getBoolean("bool", true)) {
+            if (!IsSupported()) {
+                Toast.makeText(this,"Not Supported",Toast.LENGTH_LONG);
+                //TODO Change the UI
+            }
             cdd.yes.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     SharedPreferences.Editor editor = getSharedPreferences("disclaimer", MODE_PRIVATE).edit();
@@ -495,7 +503,26 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
+    public boolean IsSupported (){
+        CameraManager cameraManager = (CameraManager) this.getSystemService(CAMERA_SERVICE);
+        String cameraID = null;
+        try {
+            for (String cameranum : cameraManager.getCameraIdList()){
+                CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameranum);
+                if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK){
+                    if (cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL) == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED){
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                }
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    return true;
+    }
     public void hideSoftKeyboard(View view){
         InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
