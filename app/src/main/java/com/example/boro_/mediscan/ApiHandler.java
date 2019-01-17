@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -17,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class ApiHandler {
 
@@ -36,16 +38,35 @@ public class ApiHandler {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            JSONArray reader = new JSONArray(response);
-                            if(reader.isNull(0))
-                            {
-                                return;
+
+                            Object json = new JSONTokener(response).nextValue();
+
+                            //If only one product is returned it is an JSONObject
+                            if (json instanceof JSONObject){
+
+                                String id = ((JSONObject)json).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+
+                                SecondSearch(id,language,context);
+
                             }
-                            mainActivity.ShowProductsDialog(reader);
+                            //If several products are available then it is an array
+                            else{
+
+                                JSONArray reader = new JSONArray(response);
+                                if(reader.isNull(0))
+                                {
+                                    mainActivity.ShowHideProgressBar(false);
+                                    Toast.makeText(context, R.string.Not_Found_Error, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                mainActivity.ShowProductsDialog(reader);
+                            }
+
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            mainActivity.ShowHideProgressBar(false);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -53,6 +74,7 @@ public class ApiHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                mainActivity.ShowHideProgressBar(false);
             }
         });
 
@@ -74,15 +96,19 @@ public class ApiHandler {
                             JSONObject obj = new JSONObject(response);
                             if(obj == null)
                             {
+                                mainActivity.ShowHideProgressBar(false);
+                                Toast.makeText(context, R.string.Not_Found_Error, Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
                             mainActivity.CreateItem(obj);
+                            mainActivity.ShowHideProgressBar(false);
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            mainActivity.ShowHideProgressBar(false);
                         }
 
                         // Display the first 500 characters of the response string.
@@ -93,6 +119,7 @@ public class ApiHandler {
             public void onErrorResponse(VolleyError error) {
                 //TODO Handle different volley errors
                 Toast.makeText(context, R.string.Communication_Error, Toast.LENGTH_SHORT).show();
+                mainActivity.ShowHideProgressBar(false);
             }
         });
 

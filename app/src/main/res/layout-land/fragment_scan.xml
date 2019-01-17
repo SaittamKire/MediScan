@@ -41,23 +41,6 @@
             app:touchIconAnimationDuration="1000"/>
 
 
-
-<!--        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>-->
-
-  <!--      <ImageButton
-            android:id="@+id/cameraSnap"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
-            android:layout_marginEnd="40dp"
-
-            android:layout_gravity="end|center_vertical"
-            app:srcCompat="@android:drawable/ic_menu_camera" />-->
-
     </FrameLayout>
 
 
