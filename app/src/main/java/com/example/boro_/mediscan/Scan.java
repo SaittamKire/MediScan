@@ -1126,7 +1126,6 @@ public class    Scan extends Fragment {
         cameraView.setOnClickListener(onSnapshotClick);
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
