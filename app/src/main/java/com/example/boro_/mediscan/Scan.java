@@ -1178,14 +1178,14 @@ public class    Scan extends Fragment {
             noPermissions = view.findViewById(R.id.permission_not_granted_text);
             noPermissions.setVisibility(View.GONE);
         }
-        else
-        {
+        else {
             final Button cameraButton = v.findViewById(R.id.camera_not_supported_button);
             cameraButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     CameraButtonClick();
                 }
             });
+        }
     }
 
     @Override

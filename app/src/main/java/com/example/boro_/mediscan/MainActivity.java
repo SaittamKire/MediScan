@@ -37,6 +37,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -590,11 +591,75 @@ public class MainActivity extends AppCompatActivity {
         InfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                Dialog dialog = new Dialog(context);
+                final Dialog dialog = new Dialog(context);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.how_to);
                 dialog.setCanceledOnTouchOutside(true);
                 dialog.show();
+
+                TextView infoClose = dialog.findViewById(R.id.close_help_btn);
+                infoClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                final TextView info_text = dialog.findViewById(R.id.info_text);
+                final ImageView info_image = dialog.findViewById(R.id.info_image);
+                final ImageView info1 = dialog.findViewById(R.id.info_page_1);
+                final ImageView info2 = dialog.findViewById(R.id.info_page_2);
+                final ImageView info3 = dialog.findViewById(R.id.info_page_3);
+                final ImageView info4 = dialog.findViewById(R.id.info_page_4);
+                info1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        info_text.setText(getResources().getString(R.string.how_to_scan));
+                        info_image.setImageResource(R.drawable.scan);
+                        info1.setColorFilter(getResources().getColor(R.color.white));
+                        info2.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info3.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info4.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                    }
+                });
+
+                info2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        info_text.setText(getResources().getString(R.string.how_to_manual));
+                        info_image.setImageResource(R.drawable.manual);
+                        info1.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info2.setColorFilter(getResources().getColor(R.color.white));
+                        info3.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info4.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                    }
+                });
+
+                info3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        info_text.setText(getResources().getString(R.string.how_to_links));
+                        info_image.setImageResource(R.drawable.links);
+                        info1.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info2.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info3.setColorFilter(getResources().getColor(R.color.white));
+                        info4.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                    }
+                });
+
+                info4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        info_text.setText(getResources().getString(R.string.how_to_history));
+                        info_image.setImageResource(R.drawable.history);
+                        info1.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info2.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info3.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
+                        info4.setColorFilter(getResources().getColor(R.color.white));
+                    }
+                });
+
+
                 //cdd.show(); //Shows it
                 //cdd.setCanceledOnTouchOutside(false); //Disables cancelations
                 //cdd.setCancelable(false);

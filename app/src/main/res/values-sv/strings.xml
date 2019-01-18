@@ -66,8 +66,9 @@
     //How to
 
     <string name="how_to_title">How to use the app:</string>
-    <string name="how_to_scan">Press anywhere on the camera screen to start the search. The app will analyze the image and search the database using the word(s) with the highest size. Please place the text you are about to scan as close to the camera as possible for the best result.</string>
-    <string name="how_to_history">The app will store the last 10 items You found with Your searches. Click on any of these to load and view them again</string>
-    <string name="how_to_links">The results will be displayed in a list with information obtained from Läkemedelsverket. Click on the list titles to display different information. The active substances are clickable and marked so with an icon. Click on one to search Google for the substance</string>
+    <string name="how_to_scan">Press anywhere on the camera screen to start the search. The app will analyze the image and search the database using the word(s) with the biggest size. Please place the text you are about to scan as close to the camera as possible for the best result.</string>
+    <string name="how_to_manual">There is also the option of searching using manual input. Click on the search bar to type.</string>
+    <string name="how_to_history">The app will store the last 10 items found during searches. Click to view them again.</string>
+    <string name="how_to_links">In the results view, clicking on one of the active substances will result in a Google search for that perticular substance.</string>
 
 </resources>
