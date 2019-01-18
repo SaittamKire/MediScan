@@ -932,14 +932,76 @@ public class    Scan extends Fragment {
 
         if (searchlang.equals("")){searchlang = "en";}
 
+        final String searchlangFinal = searchlang;
+
         final CloudLabelManipulator Apistr = new CloudLabelManipulator(result); // Creates a cloudlabelmanipulator object out of the result from the firebasedocumenttext object we made earlier. we use functions in this class to find relevant text
 
         apiHandler.FirstSearch(Apistr.getFirstStr(), Apistr.getDosage(), searchlang, getContext(), new ApiHandler.FirstSearchListener() {
             @Override
             public void onEmptyResult() {
 
-                showToast(getString(R.string.no_product_match) + " " + Apistr.getFirstStr());
-                enableSnapShot();
+                apiHandler.FirstSearchNoStrength(Apistr.getFirstStr(), searchlangFinal, getContext(), new ApiHandler.FirstSearchListener() {
+                    @Override
+                    public void onEmptyResult() {
+                        showToast(getString(R.string.no_product_match) + " " + Apistr.getFirstStr());
+                        enableSnapShot();
+                    }
+
+                    @Override
+                    public void onMultipleResults(JSONArray listResult) {
+
+                        if(listResult.isNull(0))
+                        {
+                            return;
+                        }
+
+                        else{
+
+                            final SelectDrugDialogFragment dialog = new SelectDrugDialogFragment();
+                            dialog.CreateList(listResult, getActivity());
+                            onProductFound();
+                            dialog.show(getFragmentManager(), "SelectDrugs");
+
+
+                            dialog.addCloseListener(new SelectDrugDialogFragment.OnClose() {
+                                @Override
+                                public void onClose() {
+                                    SecondSearch(dialog.getInternalID());
+
+                                }
+
+                                //If back button is pressed when dialog is up
+                                @Override
+                                public void onDismiss() {
+                                    enableSnapShot();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onSingleResult(JSONObject finalProduct) {
+
+                        String id = null;
+                        try {
+                            id = ((JSONObject)finalProduct).getJSONArray("Products").getJSONObject(0).optString("InternalID");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        SecondSearch(id);
+                    }
+
+                    @Override
+                    public void onException(JSONException jsonexception) {
+                        enableSnapShot();
+                    }
+
+                    @Override
+                    public void onVolleyError(VolleyError volleyError) {
+                        enableSnapShot();
+                    }
+                });
+
 
             }
 
