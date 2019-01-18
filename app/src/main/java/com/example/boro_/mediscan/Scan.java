@@ -928,7 +928,10 @@ public class    Scan extends Fragment {
 
     public void getImageStrings(FirebaseVisionDocumentText result){
 
-        String searchlang = ((MainActivity)getActivity()).SearchLanguage;
+        String searchlang = "";
+        if (((MainActivity)getActivity()).SearchLanguage != null){
+            searchlang = ((MainActivity)getActivity()).SearchLanguage;
+        }
 
         if (searchlang.equals("")){searchlang = "en";}
 
