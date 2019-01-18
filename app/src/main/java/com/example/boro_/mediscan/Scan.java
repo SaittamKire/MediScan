@@ -216,7 +216,6 @@ public class    Scan extends Fragment {
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestCameraPermission();
             noPermissions.setVisibility(View.VISIBLE);
             return;
         }
@@ -928,7 +927,10 @@ public class    Scan extends Fragment {
 
     public void getImageStrings(FirebaseVisionDocumentText result){
 
-        String searchlang = ((MainActivity)getActivity()).SearchLanguage;
+        String searchlang = "";
+        if (((MainActivity)getActivity()).SearchLanguage != null){
+            searchlang = ((MainActivity)getActivity()).SearchLanguage;
+        }
 
         if (searchlang.equals("")){searchlang = "en";}
 
@@ -1234,20 +1236,24 @@ public class    Scan extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        if (isCameraSupported) {
-            cameraView = view.findViewById(R.id.previewWindow);
-            scanView = view.findViewById(R.id.scanView);
-            noPermissions = view.findViewById(R.id.permission_not_granted_text);
-            noPermissions.setVisibility(View.GONE);
-        }
-        else {
-            final Button cameraButton = v.findViewById(R.id.camera_not_supported_button);
-            cameraButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    CameraButtonClick();
-                }
-            });
-        }
+
+            if (isCameraSupported) {
+                cameraView = view.findViewById(R.id.previewWindow);
+                scanView = view.findViewById(R.id.scanView);
+
+            }
+            else {
+                final Button cameraButton = v.findViewById(R.id.camera_not_supported_button);
+                cameraButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        CameraButtonClick();
+                    }
+                });
+            }
+
+        noPermissions = view.findViewById(R.id.permission_not_granted_text);
+        noPermissions.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -1256,7 +1262,8 @@ public class    Scan extends Fragment {
 
         startBackGroundThread();
 
-        if (isCameraSupported)
+        if (isCameraSupported && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED)
         {
             if (cameraView.isAvailable()) {
                 openCamera();
@@ -1264,7 +1271,10 @@ public class    Scan extends Fragment {
                 cameraView.setSurfaceTextureListener(textureListener);
             }
         }
-        //openCamera();
+        else{
+            noPermissions.setVisibility(View.VISIBLE);
+        }
+
 
     }
 

@@ -53,6 +53,12 @@ public class SelectDrugDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        close1.onDismiss();
+    }
+
+
     public void CreateList(JSONArray array, Context context){
 
         if (array.isNull(0)){
