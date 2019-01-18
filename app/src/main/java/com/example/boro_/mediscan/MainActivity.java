@@ -607,6 +607,15 @@ public class MainActivity extends AppCompatActivity {
 
                 final TextView info_text = dialog.findViewById(R.id.info_text);
                 final ImageView info_image = dialog.findViewById(R.id.info_image);
+
+                if (SearchLanguage.equals("sv"))
+                {
+                    info_image.setImageResource(R.drawable.scan);
+                }
+                else
+                {
+                    info_image.setImageResource(R.drawable.scan_en);
+                }
                 final ImageView info1 = dialog.findViewById(R.id.info_page_1);
                 final ImageView info2 = dialog.findViewById(R.id.info_page_2);
                 final ImageView info3 = dialog.findViewById(R.id.info_page_3);
@@ -615,7 +624,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         info_text.setText(getResources().getString(R.string.how_to_scan));
-                        info_image.setImageResource(R.drawable.scan);
+
+                        if (SearchLanguage.equals("sv"))
+                        {
+                            info_image.setImageResource(R.drawable.scan);
+                        }
+                        else
+                        {
+                            info_image.setImageResource(R.drawable.scan_en);
+                        }
                         info1.setColorFilter(getResources().getColor(R.color.white));
                         info2.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
                         info3.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
@@ -627,7 +644,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         info_text.setText(getResources().getString(R.string.how_to_manual));
-                        info_image.setImageResource(R.drawable.manual);
+                        if (SearchLanguage.equals("sv"))
+                        {
+                            info_image.setImageResource(R.drawable.manual);
+                        }
+                        else
+                        {
+                            info_image.setImageResource(R.drawable.manual_en);
+                        }
                         info1.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
                         info2.setColorFilter(getResources().getColor(R.color.white));
                         info3.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
@@ -639,7 +663,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         info_text.setText(getResources().getString(R.string.how_to_links));
-                        info_image.setImageResource(R.drawable.links);
+                        if (SearchLanguage.equals("sv"))
+                        {
+                            info_image.setImageResource(R.drawable.links);
+                        }
+                        else
+                        {
+                            info_image.setImageResource(R.drawable.links_en);
+                        }
                         info1.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
                         info2.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
                         info3.setColorFilter(getResources().getColor(R.color.white));
@@ -651,7 +682,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         info_text.setText(getResources().getString(R.string.how_to_history));
-                        info_image.setImageResource(R.drawable.history);
+                        if (SearchLanguage.equals("sv"))
+                        {
+                            info_image.setImageResource(R.drawable.history);
+                        }
+                        else
+                        {
+                            info_image.setImageResource(R.drawable.history_en);
+                        }
                         info1.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
                         info2.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));
                         info3.setColorFilter(getResources().getColor(R.color.colorPrimaryDark));

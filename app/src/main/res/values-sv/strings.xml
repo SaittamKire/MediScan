@@ -43,9 +43,9 @@
 
 
     //Wakeup Dialog Strings
-    <string name="dialog_text">Användaren ansvarar själv för sina beslut som fattas utifrån den data som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar.</string>
-    <string name="dialog_text_disclaimer">Genom att klicka på \"JA \" godkänner du dessa vilkor</string>
-    <string name="dialog_text_ok">Ja</string>
+    <string name="dialog_text">All information i denna applikation är hämtad från Läkemedelsverkets hemsida och FASS.se</string>
+    <string name="dialog_text_disclaimer">Användaren ansvarar själv för eventuella beslut som fattas utifrån informationen som presenteras i denna applikation. Kontrollera att rätt läkemedel visas på skärmen efter att sökning skett. Utgivarna frånsäger sig allt ansvar. Genom att klicka nedan accepterar du dessa villkor.</string>
+    <string name="dialog_text_ok">Jag accepterar dessa villkor</string>
     <string name="dialog_Select_Drug">Klicka på önskat läkemedel</string>
     <string name="dialog_Drug_Clicked_1">Hämtar: </string>
     <string name="dialog_Drug_Clicked_2"> från databasen</string>
@@ -65,10 +65,10 @@
 
     //How to
 
-    <string name="how_to_title">How to use the app:</string>
-    <string name="how_to_scan">Press anywhere on the camera screen to start the search. The app will analyze the image and search the database using the word(s) with the biggest size. Please place the text you are about to scan as close to the camera as possible for the best result.</string>
-    <string name="how_to_manual">There is also the option of searching using manual input. Click on the search bar to type.</string>
-    <string name="how_to_history">The app will store the last 10 items found during searches. Click to view them again.</string>
-    <string name="how_to_links">In the results view, clicking on one of the active substances will result in a Google search for that perticular substance.</string>
+    <string name="how_to_title">Hur man använder appen:</string>
+    <string name="how_to_scan">Klicka vart som helst på skärmen för att ta en bild och starta en sökning. Appen kommer att analysera bilden och söka igenom databasen med hjälp av de ord som har störst textstorlek. Placera texten du ska söka på så nära som möjligt för bästa resultat.</string>
+    <string name="how_to_manual">Det går också att söka manuellt. Klicka på sökfältet för att skriva in text.</string>
+    <string name="how_to_history">Appen kommer att lagra de 10 senaste sökningarna. Klicka på något av dessa för att visa det igen.</string>
+    <string name="how_to_links">När resultatet visas, klicka på en av de aktiva substanserna för att starta en sökning på Google för vald substans.</string>
 
 </resources>

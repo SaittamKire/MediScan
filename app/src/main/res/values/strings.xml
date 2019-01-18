@@ -48,9 +48,10 @@
 
     //Wakeup Dialog Strings
 
-    <string name="dialog_text">The user is responsible for their own decisions made by the presented data. Make sure that the correct medicine is presented on screen after a search has been made. The creators of this application is not responsible for injury or death.</string>
-    <string name="dialog_text_disclaimer"> By clicking \"YES\" you accept these conditions</string>
-    <string name="dialog_text_ok">Yes</string>
+
+    <string name="dialog_text">All information in this application is collected from Läkemedelsverket\'s website and from FASS.se</string>
+    <string name="dialog_text_disclaimer"> The user is solely responsible for any decisions or actions made from the information presented in this app. Please verify that the correct drug is shown on the screen after a search. The developers of this app resign themselves from any responsibility. By clicking below you accept these terms.</string>
+    <string name="dialog_text_ok">I accept these terms</string>
     <string name="dialog_Select_Drug">Select your preferred drug</string>
     <string name="dialog_Drug_Clicked_1">Drug: </string>
     <string name="dialog_Drug_Clicked_2"> Clicked</string>
