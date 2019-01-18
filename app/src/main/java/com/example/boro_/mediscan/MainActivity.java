@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                //layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 int width  = layout.getMeasuredWidth();
                 width = (int)(width * 0.8);
                 SearchBar.setWidth(width);

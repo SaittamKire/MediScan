@@ -36,6 +36,7 @@
         android:gravity="center"
         android:padding="@dimen/fab_margin"
         android:text="@string/fassButton"
+        android:textColor="@color/white"
         android:textAlignment="center"
         android:background="@drawable/button_background"
 
